@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+vendor/
+.kilo/
+
+# IDE & Editor files
+.vscode/
+.idea/
+.cursor/
+.qodo/
+.sixth/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment & Sensitive configs
+.env
+.env.local
+.env.*.local
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+backend/probe_results.txt
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# User Uploads (keep directory structure with .gitkeep if needed)
+# uploads/*
+# !uploads/.gitkeep

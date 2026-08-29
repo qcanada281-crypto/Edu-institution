@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail Etudiant - KAWKAB AL OUOLOUM</title>
+    <link rel="stylesheet" href="css/portal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+</head>
+<body>
+    <div class="portal-container">
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <div class="login-header">
+                <div class="logo">
+                    <img src="images/kawkab_alouloum.jpeg" alt="KAWKAB AL OULOU" onerror="this.style.display='none'">
+                    <h1>KAWKAB AL OULOU</h1>
+                </div>
+                <h2>Portail Etudiant/Parent</h2>
+                <p>Connexion simplifiee: code eleve + date de naissance</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="studentCode">
+                        <i class="fas fa-id-card"></i>
+                        Code eleve
+                    </label>
+                    <input type="text" id="studentCode" name="student_code" required 
+                           placeholder="Ex: STU2026001">
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate">
+                        <i class="fas fa-cake-candles"></i>
+                        Date de naissance
+                    </label>
+                    <input type="date" id="birthDate" name="birth_date" required>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Se connecter
+                </button>
+
+                <div id="loginFeedback" class="login-feedback" aria-live="polite"></div>
+            </form>
+
+            <div class="test-credentials" id="testCredentials">
+                <h3><i class="fas fa-flask"></i> Compte test</h3>
+                <p><strong>Code:</strong> <code>G132026001</code></p>
+                <p><strong>Date naissance:</strong> <code>2008-04-16</code></p>
+                <button type="button" class="btn-test-fill" id="fillTestStudent">
+                    Remplir automatiquement
+                </button>
+            </div>
+            <br>
+            <br>
+            
+             <div class="login-links">
+                <a href="reset_password.html" class="forgot-password-link">
+                    <i class="fas fa-key"></i>
+                    Mot de passe oublié ?
+                </a>
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-right"></i>
+                    Retour au site principal
+                </a>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section" id="dashboardSection" style="display: none;">
+            <nav class="dashboard-nav">
+                <div class="nav-brand">
+                    <img src="images/kawkab_alouloum.jpeg" alt="KAWKAB AL OULOU" onerror="this.style.display='none'" style="border-radius: 25%;">
+                    <span>KAWKAB AL OULOUM</span>
+                </div>
+                <div class="student-info">
+                    <div class="student-details">
+                        <span class="student-name" id="displayStudentName">Nom Étudiant</span>
+                        <span class="student-class" id="displayStudentClass">Classe</span>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Déconnexion
+                    </button>
+                </div>
+            </nav>
+            
+            <div class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="averageGrade">--</span>
+                            <span class="stat-label">Moyenne Générale</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="attendanceRate">--%</span>
+                            <span class="stat-label">Taux de présence</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clipboard-list"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalAbsences">--</span>
+                            <span class="stat-label">Absences</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-layer-group"></i>
+                        <div class="stat-info">
+                            <span class="stat-value" id="studentLevel">--</span>
+                            <span class="stat-label">Niveau</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content Grid -->
+                <div class="content-grid">
+                    <!-- Grades Section -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-star"></i> Notes et Résultats</h3>
+                            <select id="semesterSelect" onchange="loadGrades()">
+                                <option value="S1">Semestre 1</option>
+                                <option value="S2">Semestre 2</option>
+                            </select>
+                        </div>
+                        <div class="card-body" id="gradesTable">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Matière</th>
+                                        <th>Continu</th>
+                                        <th>Examen</th>
+                                        <th>Coeff</th>
+                                        <th>Moyenne</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gradesBody">
+                                    <tr><td colspan="5" class="text-center">Chargement...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance Section -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-user-clock"></i> Absences et Retards</h3>
+                        </div>
+                        <div class="card-body" id="attendanceTable">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Session</th>
+                                        <th>Justifiée</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceBody">
+                                    <tr><td colspan="4" class="text-center">Chargement...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements Section -->
+                    <div class="content-card announcements-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bullhorn"></i> Annonces Importantes</h3>
+                        </div>
+                        <div class="card-body" id="announcementsList">
+                            <p class="text-center">Chargement des annonces...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/portal.js?v=20260720-attachments"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدروس الرقمية | مؤسسة Kawkab Al Ouloum</title>
+    <meta name="description" content="مكتبة الدروس الرقمية بمؤسسة Kawkab Al Ouloum: فيديوهات، PDF، وصور تعليمية.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=202611">
+    <link rel="stylesheet" href="css/inner-pages.css?v=2026">
+    <link rel="stylesheet" href="css/lessons-page.css?v=20260321">
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+</head>
+<body class="inner-page lessons-page">
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <p><i class="fa-solid fa-location-dot"></i> المغرب - مؤسسة Kawkab Al Ouloum التعليمية</p>
+            <p><i class="fa-solid fa-phone"></i> 0650032824</p>
+            <p><i class="fa-solid fa-envelope"></i> contact@kawkab-ouloum.ma</p>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand">
+                <img src="images/kawkab_alouloum.jpeg" alt="Kawkab Al Ouloum Logo">
+                <span>مؤسسة <strong>Kawkab Al Ouloum</strong></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">الرئيسية</a>
+                <a href="lessons.html" class="active">منصة الدروس</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <div class="container" data-reveal>
+            <p class="section-subtitle">المكتبة الرقمية</p>
+            <h1>منصة الدروس التعليمية</h1>
+            <p>كل المحتوى مرتب حسب النوع: فيديو، PDF، وصور تعليمية. اختر الفئة التي تريد وابدأ التعلّم.</p>
+        </div>
+    </section>
+
+    <main>
+        <section class="section-panel">
+            <div class="container">
+                <div class="panel lessons-panel" data-reveal>
+                    <div class="lessons-tools">
+                        <div class="type-tabs" role="tablist" aria-label="فلترة حسب النوع">
+                            <button type="button" class="type-tab is-active" data-type="">الكل</button>
+                            <button type="button" class="type-tab" data-type="video">فيديو</button>
+                            <button type="button" class="type-tab" data-type="pdf">PDF</button>
+                            <button type="button" class="type-tab" data-type="image">صور</button>
+                        </div>
+                        <div class="search-wrap">
+                            <label for="lessonsSearch">بحث</label>
+                            <input id="lessonsSearch" type="search" placeholder="ابحث بالعنوان أو المادة أو المستوى">
+                        </div>
+                    </div>
+                    <div id="lessonsFeedback" class="feedback" aria-live="polite"></div>
+                    <div id="lessonsGrid" class="lessons-grid">
+                        <article class="lesson-card lesson-card-empty">
+                            <p class="muted">جاري تحميل الدروس...</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>© 2026 مؤسسة Kawkab Al Ouloum التعليمية. جميع الحقوق محفوظة.</p>
+            <a href="index.html">الصفحة الرئيسية</a>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/lessons-manual-data.js?v=20260321"></script>
+    <script src="js/lessons.js?v=20260321"></script>
+</body>
+</html>

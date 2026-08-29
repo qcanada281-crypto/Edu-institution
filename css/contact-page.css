@@ -1,0 +1,199 @@
+.inner-page.contact-page {
+    --ip-primary: #1b7c5d;
+    --ip-primary-strong: #0f5a44;
+    --ip-accent: #2bb692;
+    --ip-highlight: #ffba43;
+    --ip-text: #133b2f;
+    --ip-muted: #53776d;
+    --ip-surface: rgba(255, 255, 255, 0.9);
+    --ip-border: rgba(24, 110, 84, 0.2);
+    --ip-shadow: 0 18px 38px rgba(18, 86, 65, 0.16);
+    background:
+        radial-gradient(circle at 8% 12%, rgba(255, 186, 67, 0.24), transparent 32%),
+        radial-gradient(circle at 92% 20%, rgba(43, 182, 146, 0.26), transparent 34%),
+        linear-gradient(180deg, #f2fff8 0%, #fbfffd 56%, #effaf5 100%);
+}
+
+.inner-page.contact-page .topbar {
+    background: linear-gradient(98deg, #0f5a44, #15735a 64%, #125247);
+}
+
+.inner-page.contact-page .topbar i {
+    color: #ffcf74;
+}
+
+.inner-page.contact-page .navbar {
+    border-bottom-color: rgba(22, 109, 82, 0.18);
+    box-shadow: 0 12px 24px rgba(12, 80, 60, 0.1);
+}
+
+.inner-page.contact-page .nav-menu a:hover {
+    background: rgba(43, 182, 146, 0.14);
+}
+
+.inner-page.contact-page .page-hero::before {
+    background: radial-gradient(circle, rgba(255, 186, 67, 0.34), transparent 68%);
+}
+
+.inner-page.contact-page .page-hero::after {
+    background: radial-gradient(circle, rgba(43, 182, 146, 0.32), transparent 70%);
+}
+
+.inner-page.contact-page .panel {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 255, 250, 0.96));
+}
+
+.inner-page.contact-page .panel h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.inner-page.contact-page .panel h3::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--ip-highlight);
+    box-shadow: 0 0 0 5px rgba(255, 186, 67, 0.23);
+}
+
+.inner-page.contact-page .field label {
+    color: #255f4d;
+}
+
+.inner-page.contact-page input,
+.inner-page.contact-page textarea {
+    font-family: "Almarai", "Cairo", sans-serif;
+    font-weight: 500;
+    border: 2px solid rgba(24, 110, 84, 0.24);
+    background: linear-gradient(180deg, #ffffff 0%, rgba(250, 255, 252, 0.98) 100%);
+    box-shadow: 0 2px 8px rgba(18, 86, 65, 0.06);
+}
+
+.inner-page.contact-page input:hover,
+.inner-page.contact-page textarea:hover {
+    border-color: rgba(43, 182, 146, 0.4);
+}
+
+.inner-page.contact-page input:focus,
+.inner-page.contact-page textarea:focus {
+    box-shadow: 0 0 0 4px rgba(43, 182, 146, 0.22), 0 4px 12px rgba(18, 86, 65, 0.08);
+}
+
+.inner-page.contact-page .btn-primary {
+    background: linear-gradient(126deg, #1b7c5d, #2bb692);
+    box-shadow: 0 10px 24px rgba(18, 92, 69, 0.25);
+}
+
+.inner-page.contact-page .btn-primary:hover {
+    box-shadow: 0 16px 30px rgba(18, 92, 69, 0.32);
+}
+
+.inner-page.contact-page .info-list li {
+    padding: 0.5rem 0.55rem;
+    border-radius: 0.85rem;
+    background: rgba(43, 182, 146, 0.08);
+    border: 1px solid rgba(43, 182, 146, 0.14);
+}
+
+.inner-page.contact-page .info-list i {
+    color: #e29a24;
+}
+
+.inner-page.contact-page .result-box {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 255, 248, 0.95));
+    border-color: rgba(24, 110, 84, 0.22);
+}
+
+.inner-page.contact-page .map-panel {
+    padding: 1.35rem;
+}
+
+.inner-page.contact-page .map-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.inner-page.contact-page .map-panel-head h3 {
+    margin: 0;
+}
+
+.inner-page.contact-page .map-panel-head h3 i {
+    color: #e29a24;
+}
+
+.inner-page.contact-page .map-open-btn {
+    border-color: rgba(24, 110, 84, 0.35);
+    white-space: nowrap;
+}
+
+.inner-page.contact-page .map-embed {
+    margin-top: 0.95rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid rgba(24, 110, 84, 0.24);
+    box-shadow: 0 14px 30px rgba(14, 88, 63, 0.14);
+    background: #eaf7f1;
+}
+
+.inner-page.contact-page .map-embed iframe {
+    display: block;
+    width: 100%;
+    min-height: 380px;
+    border: 0;
+}
+
+.inner-page.contact-page .map-note {
+    margin-top: 0.8rem;
+    line-height: 1.8;
+}
+
+.inner-page.contact-page .map-note code {
+    color: #0f5a44;
+    font-weight: 700;
+}
+
+.inner-page.contact-page .feedback.success {
+    color: #0f5b2f;
+    background: #e8faef;
+    border-color: #87d5a7;
+}
+
+.inner-page.contact-page .feedback.error {
+    color: #8b2a2a;
+    background: #fff0ef;
+    border-color: #f1b1a8;
+}
+
+.inner-page.contact-page .footer {
+    background: linear-gradient(98deg, #0f5a44, #104a3b);
+}
+
+.inner-page.contact-page .footer a {
+    color: #ffe6b0;
+}
+
+.inner-page.contact-page .footer a:hover {
+    color: #ffffff;
+}
+
+@media (max-width: 700px) {
+    .inner-page.contact-page .map-panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .inner-page.contact-page .map-open-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .inner-page.contact-page .map-embed iframe {
+        min-height: 300px;
+    }
+}

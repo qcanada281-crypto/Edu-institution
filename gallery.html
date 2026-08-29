@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض الصور | مؤسسة Kawkab Al Ouloum</title>
+    <meta name="description" content="معرض صور شامل لفعاليات ورحلات ومناسبات مؤسسة Kawkab Al Ouloum التعليمية.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=202611">
+    <link rel="stylesheet" href="css/inner-pages.css?v=2026">
+    <link rel="stylesheet" href="css/gallery.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+</head>
+<body class="inner-page">
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <p><i class="fa-solid fa-location-dot"></i> المغرب - مؤسسة Kawkab Al Ouloum التعليمية</p>
+            <p><i class="fa-solid fa-phone"></i> 0650032824</p>
+            <p><i class="fa-solid fa-envelope"></i> contact@kawkab-ouloum.ma</p>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand">
+                <img src="images/kawkab_alouloum.jpeg" alt="Kawkab Al Ouloum Logo">
+                <span>مؤسسة <strong>Kawkab Al Ouloum</strong></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">الرئيسية</a>
+                <a href="gallery.html" class="active">معرض الصور</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <div class="container" data-reveal>
+            <p class="section-subtitle">معرض الصور</p>
+            <h1>استكشف لحظات من حياتنا المدرسية</h1>
+            <p>صور من رحلاتنا التعليمية، الحفلات، والمناسبات المميزة في مؤسسة Kawkab Al Ouloum</p>
+        </div>
+    </section>
+
+    <main>
+        <!-- Gallery Filter Section -->
+        <section class="gallery-section">
+            <div class="container">
+                <!-- Category Filters -->
+                <div class="gallery-filters" data-reveal>
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-images"></i>
+                        <span>جميع الصور</span>
+                    </button>
+                    <button class="filter-btn" data-filter="trips">
+                        <i class="fas fa-bus"></i>
+                        <span>الرحلات</span>
+                    </button>
+                    <button class="filter-btn" data-filter="events">
+                        <i class="fas fa-star"></i>
+                        <span>الفعاليات</span>
+                    </button>
+                    <button class="filter-btn" data-filter="ceremonies">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>الحفلات</span>
+                    </button>
+                    <button class="filter-btn" data-filter="activities">
+                        <i class="fas fa-people-group"></i>
+                        <span>الأنشطة</span>
+                    </button>
+                </div>
+
+                <!-- Location Filter -->
+                <div class="location-filter" data-reveal>
+                    <label for="locationSelect">
+                        <i class="fas fa-map-location-dot"></i>
+                        <span>تصفية حسب المكان:</span>
+                    </label>
+                    <select id="locationSelect" class="location-select">
+                        <option value="all">جميع الأماكن</option>
+                    </select>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div class="gallery-grid" id="galleryGrid">
+                    <!-- Trip 1 -->
+                    <div class="gallery-item" data-category="trips" data-reveal>
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_aloulom.jpg" alt="رحلة تعليمية - منظر طبيعي" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Trip+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>رحلة التلاميذ إلى الشلالات</h3>
+                            <p class="gallery-category"><i class="fas fa-map-marker-alt"></i> رحلة تعليمية</p>
+                            <p class="gallery-date">مارس 2026</p>
+                        </div>
+                    </div>
+
+                    <!-- Trip 2 -->
+                    <div class="gallery-item" data-category="trips" data-reveal style="--delay: 0.05s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum1.jpg" alt="صورة جماعية من الرحلة" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Group+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>صورة جماعية من الرحلة</h3>
+                            <p class="gallery-category"><i class="fas fa-map-marker-alt"></i> رحلة تعليمية</p>
+                            <p class="gallery-date">مارس 2026</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 1 -->
+                    <div class="gallery-item" data-category="events" data-reveal style="--delay: 0.10s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum2.jpg" alt="ندوة فكرية" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Event+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>ندوة توعية صحية</h3>
+                            <p class="gallery-category"><i class="fas fa-microphone"></i> فعالية</p>
+                            <p class="gallery-date">فبراير 2026</p>
+                        </div>
+                    </div>
+
+                    <!-- Ceremony 1 -->
+                    <div class="gallery-item" data-category="ceremonies" data-reveal style="--delay: 0.15s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum4.jpg" alt="حفل تخرج الطلاب" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Ceremony+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>حفل تكريم الطلاب المتفوقين</h3>
+                            <p class="gallery-category"><i class="fas fa-trophy"></i> احتفالية</p>
+                            <p class="gallery-date">يناير 2026</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity 1 -->
+                    <div class="gallery-item" data-category="activities" data-reveal style="--delay: 0.20s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_aloulom2.jpg" alt="نشاط رياضي" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Activity+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>بطولة رياضية بين الأقسام</h3>
+                            <p class="gallery-category"><i class="fas fa-futbol"></i> نشاط</p>
+                            <p class="gallery-date">ديسمبر 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 2 -->
+                    <div class="gallery-item" data-category="events" data-reveal style="--delay: 0.25s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_aloulom4.jpg" alt="ورشة عمل" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Workshop+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>ورشة الكتابة الإبداعية</h3>
+                            <p class="gallery-category"><i class="fas fa-pen"></i> فعالية</p>
+                            <p class="gallery-date">نوفمبر 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Ceremony 2 -->
+                    <div class="gallery-item" data-category="ceremonies" data-reveal style="--delay: 0.30s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_aloulom1.jpg" alt="توزيع الجوائز" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Awards+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>توزيع شهادات التفوق</h3>
+                            <p class="gallery-category"><i class="fas fa-award"></i> احتفالية</p>
+                            <p class="gallery-date">أكتوبر 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity 2 -->
+                    <div class="gallery-item" data-category="activities" data-reveal style="--delay: 0.35s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_aloulom4.jpg" alt="نشاط ثقافي" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Cultural+Activity'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>حفل الشعر والإنشاد</h3>
+                            <p class="gallery-category"><i class="fas fa-music"></i> نشاط</p>
+                            <p class="gallery-date">سبتمبر 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Trip 3 -->
+                    <div class="gallery-item" data-category="trips" data-reveal style="--delay: 0.40s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum1.jpg" alt="رحلة متحف" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Museum+Trip'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>زيارة المتحف الوطني</h3>
+                            <p class="gallery-category"><i class="fas fa-landmark"></i> رحلة تعليمية</p>
+                            <p class="gallery-date">أغسطس 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 3 -->
+                    <div class="gallery-item" data-category="events" data-reveal style="--delay: 0.45s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum3.jpg" alt="محاضرة علمية" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Lecture+Photo'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>محاضرة في تكنولوجيا المستقبل</h3>
+                            <p class="gallery-category"><i class="fas fa-laptop"></i> فعالية</p>
+                            <p class="gallery-date">يوليو 2025</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity 3 -->
+                    <div class="gallery-item" data-category="activities" data-reveal style="--delay: 0.50s;">
+                        <div class="gallery-image-wrapper">
+                            <img src="images/kaoukab_alouloum5.jpg" alt="مسابقة نقاش" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Debate+Activity'">
+                            <div class="gallery-overlay">
+                                <button class="gallery-open-btn" title="عرض كامل الحجم">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="gallery-info">
+                            <h3>مسابقة النقاش الحر</h3>
+                            <p class="gallery-category"><i class="fas fa-comments"></i> نشاط</p>
+                            <p class="gallery-date">يونيو 2025</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State Message -->
+                <div class="gallery-empty-state" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>لا توجد صور في هذه الفئة حالياً</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Photo Statistics Section -->
+        <section class="gallery-stats-section">
+            <div class="container">
+                <div class="gallery-stats-grid">
+                    <div class="stat-card" data-reveal>
+                        <div class="stat-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>+250</h3>
+                            <p>صورة من الأنشطة</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-reveal style="--delay: 0.08s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>12+</h3>
+                            <p>رحلات تعليمية</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-reveal style="--delay: 0.16s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>25+</h3>
+                            <p>فعالية سنوية</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" data-reveal style="--delay: 0.24s;">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>500+</h3>
+                            <p>طالب ساجيم</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div class="gallery-lightbox" id="galleryLightbox">
+        <div class="lightbox-overlay" id="lightboxOverlay"></div>
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <img src="" alt="صورة" id="lightboxImage" loading="lazy">
+            <button class="lightbox-nav lightbox-next" id="lightboxNext">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="lightbox-info" id="lightboxInfo"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>© 2026 مؤسسة Kawkab Al Ouloum التعليمية. جميع الحقوق محفوظة.</p>
+            <a href="index.html">الصفحة الرئيسية</a>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/gallery.js"></script>
+</body>
+</html>

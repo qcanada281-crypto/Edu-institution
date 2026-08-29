@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة | مؤسسة Kawkab Al Ouloum</title>
+    <meta name="description" content="لوحة إدارة بسيطة لتسيير التلاميذ والنقط والغياب">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=202611">
+    <link rel="stylesheet" href="css/inner-pages.css?v=2026">
+
+    <style>
+        .premium-identity-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.8rem 1.2rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(15, 79, 138, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 0.5rem;
+        }
+
+        .identity-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--ip-accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(31, 168, 207, 0.3);
+        }
+
+        .identity-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .identity-name {
+            font-weight: 800;
+            color: var(--ip-primary-strong);
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .identity-meta {
+            margin: 0;
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.8rem;
+            color: var(--ip-muted);
+        }
+
+        .identity-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .dashboard-head {
+            border-bottom: 2px solid rgba(15, 79, 138, 0.08);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+        }
+    </style>
+    <link rel="stylesheet" href="css/admin-page.css?v=20260328">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+</head>
+
+<body class="inner-page admin-page">
+
+
+
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand">
+                <img src="images/kawkab_alouloum.jpeg" alt="Kawkab Al Ouloum Logo">
+                <span>مؤسسة <strong>Kawkab Al Ouloum</strong></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">الرئيسية</a>
+                <a href="admin.html" class="active">لوحة الإدارة</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section-panel">
+            <div class="container panel-layout admin-layout">
+                <div class="panel" data-reveal>
+
+                    <section id="adminLoginPanel" class="admin-login-card">
+                        <h3>تسجيل دخول الإدارة</h3>
+                        <p class="helper">اختر نوع الحساب وأدخل البريد الإلكتروني والكود.</p>
+
+                        <form id="adminLoginForm" class="role-login-form" action="backend/admin_auth.php" method="post">
+                            <div class="form-grid compact">
+                                <div class="field">
+                                    <label for="admin_role">نوع الحساب *</label>
+                                    <select id="admin_role" name="role" required>
+                                        <option value="director">المدير (Director)</option>
+                                        <option value="secretary">السكرتارية (Secretary)</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="admin_email">البريد الإلكتروني *</label>
+                                    <input id="admin_email" name="email" type="email"
+                                        placeholder="admin@kawkab-ouloum.ma" required>
+                                </div>
+                                <div class="field">
+                                    <label for="admin_code">الكود الإداري *</label>
+                                    <div class="input-with-toggle">
+                                        <input id="admin_code" name="code" type="password" placeholder="Admin@2026"
+                                            autocomplete="current-password" required>
+                                        <button class="password-toggle" type="button" data-toggle-target="admin_code"
+                                            aria-controls="admin_code" aria-label="إظهار الكود الإداري"
+                                            aria-pressed="false">
+                                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                دخول
+                            </button>
+                        </form>
+
+                        <div id="adminLoginFeedback" class="feedback" aria-live="polite"></div>
+                        <div
+                            style="margin-top: 2rem; padding: 1.2rem; background: rgba(21, 91, 155, 0.05); border-radius: 0.8rem;">
+                            <p style="margin: 0 0 0.5rem 0; font-size: 0.95rem; color: #334e68; text-align: center;">
+                                <i class="fa-solid fa-info-circle"></i> <strong>بيانات الدخول:</strong>
+                            </p>
+                            <div style="text-align: center; font-size: 0.9rem; color: #555;">
+                                <p style="margin: 0.3rem 0;"><strong>المدير:</strong> admin@kawkab-ouloum.ma /
+                                    Admin@2026</p>
+                                <p style="margin: 0.3rem 0;"><strong>السكرتارية:</strong> secretary@kawkab-ouloum.ma /
+                                    Secretary@2026</p>
+                                <p style="margin: 0.4rem 0; color: #718096; font-size: 0.85rem;">(مطابقة لقيم
+                                    config.php: DIRECTOR_LOGIN_EMAIL / DIRECTOR_LOGIN_CODE و SECRETARY_LOGIN_EMAIL /
+                                    SECRETARY_LOGIN_CODE)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="adminDashboard" class="admin-dashboard" hidden>
+                        <header class="dashboard-head slim-header">
+                            <div class="dashboard-head-actions">
+                                <div id="adminIdentity" class="identity-box">
+                                    <p class="muted">ADMIN LOGIN</p>
+                                </div>
+                                <button id="adminLogoutBtn" class="btn btn-outline" type="button">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    تسجيل الخروج
+                                </button>
+                            </div>
+                        </header>
+
+                        <nav class="admin-tabs" aria-label="الخدمات">
+                            <button type="button" class="tab-btn is-active" data-tab-target="studentsTab">
+                                <i class="fa-solid fa-user-plus"></i>
+                                إضافة طالب
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="studentsListTab">
+                                <i class="fa-solid fa-users"></i>
+                                لائحة التلاميذ
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="gradesTab">
+                                <i class="fa-solid fa-square-plus"></i>
+                                النقط
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="attendanceTab">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                                الغياب
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="lessonsTab">
+                                <i class="fa-solid fa-photo-film"></i>
+                                الدروس
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="galleryTab">
+                                <i class="fa-solid fa-image"></i>
+                                معرض الصور
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="coursesTab">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                الشعب والبرامج
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="reportsTab" data-role-only="director"
+                                hidden>
+                                <i class="fa-solid fa-chart-column"></i>
+                                التقارير
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="promotionTab"
+                                data-role-only="director" hidden>
+                                <i class="fa-solid fa-arrow-up-right-dots"></i>
+                                الترحيل السنوي
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="messagesTab"
+                                data-role-only="director" hidden>
+                                <i class="fa-solid fa-envelope"></i>
+                                رسائل التواصل
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teachersTab"
+                                data-role-only="director" hidden>
+                                <i class="fa-solid fa-chalkboard-teacher"></i>
+                                طلبات الأساتذة
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherAbsencesTab">
+                                <i class="fa-solid fa-calendar-xmark"></i>
+                                غيابات الأساتذة
+                                <span id="urgentAbsencesBadge"
+                                    style="display:none; background:#ef4444; color:white; padding:0.1rem 0.5rem; border-radius:10px; font-size:0.75rem; font-weight:bold; margin-right:0.3rem;"></span>
+                            </button>
+                        </nav>
+
+                        <p id="directorAccessNote" class="status-note access-note" data-role-only="director" hidden>
+                            <i class="fa-solid fa-user-tie"></i> حساب المدير مخصص للإشراف العام على المؤسسة، تعديل
+                            بيانات التلاميذ، ترحيل التلاميذ، إدارة حسابات الأساتذة والبت في غياباتهم، والاطلاع على
+                            الرسائل والتقارير.
+                        </p>
+                        <p id="secretaryAccessNote" class="status-note access-note" data-role-only="secretary" hidden>
+                            <i class="fa-solid fa-user-shield"></i> حساب السكرتارية مخصص لتسجيل التلاميذ وإضافتهم، إدخال
+                            النقط والغياب، إدارة الدروس، والاطلاع على إشعارات غياب الأساتذة.
+                        </p>
+
+                        <section id="studentsTab" class="tab-panel is-active" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-user-pen"></i> 3) إضافة / تعديل طالب</h3>
+                                    <form id="studentAdminForm" action="backend/admin_students.php" method="post">
+                                        <input type="hidden" name="student_id" value="0">
+                                        <input type="hidden" name="is_request" value="no">
+                                        <div class="form-grid">
+                                            <div class="field">
+                                                <label for="student_code">كود الطالب *</label>
+                                                <input id="student_code" name="student_code" type="text"
+                                                    placeholder="STU2026004" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="class_name">القسم *</label>
+                                                <input id="class_name" name="class_name" type="text" placeholder="3AC-2"
+                                                    required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="first_name">الاسم *</label>
+                                                <input id="first_name" name="first_name" type="text" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="last_name">اللقب *</label>
+                                                <input id="last_name" name="last_name" type="text" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="birth_date">تاريخ الازدياد *</label>
+                                                <input id="birth_date" name="birth_date" type="date" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="gender">الجنس *</label>
+                                                <select id="gender" name="gender" required>
+                                                    <option value="">اختر</option>
+                                                    <option value="male">ذكر</option>
+                                                    <option value="female">أنثى</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="level">المستوى *</label>
+                                                <select id="level" name="level" required>
+                                                    <option value="">اختر المستوى</option>
+                                                    <option value="Collège">Collège</option>
+                                                    <option value="Lycée">Lycée</option>
+                                                    <option value="Baccalauréat">Baccalauréat</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="phone">هاتف الطالب</label>
+                                                <input id="phone" name="phone" type="tel" placeholder="06xxxxxxxx">
+                                            </div>
+                                            <div class="field">
+                                                <label for="email">بريد الطالب</label>
+                                                <input id="email" name="email" type="email"
+                                                    placeholder="student@email.com">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="address">العنوان</label>
+                                                <input id="address" name="address" type="text"
+                                                    placeholder="الحي / المدينة">
+                                            </div>
+                                            <div class="field">
+                                                <label for="guardian_name">اسم ولي الأمر *</label>
+                                                <input id="guardian_name" name="guardian_name" type="text" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="guardian_phone">هاتف ولي الأمر *</label>
+                                                <input id="guardian_phone" name="guardian_phone" type="tel" required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="guardian_email">بريد ولي الأمر</label>
+                                                <input id="guardian_email" name="guardian_email" type="email">
+                                            </div>
+                                        </div>
+                                        <div class="actions-row">
+                                            <button id="studentSubmitBtn" class="btn btn-primary" type="submit">
+                                                <i class="fa-solid fa-floppy-disk"></i>
+                                                حفظ الطالب
+                                            </button>
+                                            <button id="studentResetBtn" class="btn btn-outline" type="button">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                                تفريغ الحقول
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div id="studentAdminFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section id="studentsListTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-table-list"></i> لائحة التلاميذ</h3>
+                                    <div class="table-tools">
+                                        <div class="field">
+                                            <label for="studentsSearch">بحث بالاسم/الكود</label>
+                                            <input id="studentsSearch" type="search"
+                                                placeholder="مثال: STU2026001 أو Yassine">
+                                        </div>
+                                        <div class="field">
+                                            <label for="levelFilter">تصفية حسب المستوى</label>
+                                            <select id="levelFilter" name="levelFilter">
+                                                <option value="">كل المستويات</option>
+                                                <option value="Collège">Collège</option>
+                                                <option value="Lycée">Lycée</option>
+                                                <option value="Baccalauréat">Baccalauréat</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>الكود</th>
+                                                    <th>الاسم الكامل</th>
+                                                    <th>القسم</th>
+                                                    <th>المستوى</th>
+                                                    <th>ولي الأمر</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentsTableBody">
+                                                <tr>
+                                                    <td colspan="6">قم بتسجيل الدخول للإدارة أولا.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="studentTableFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <datalist id="studentsCodeSuggestions"></datalist>
+
+                        <section id="gradesTab" class="tab-panel">
+                            <article class="admin-block">
+                                <h3><i class="fa-solid fa-graduation-cap"></i> إدخال نقطة</h3>
+                                <form id="gradeAdminForm" action="backend/admin_records.php" method="post">
+                                    <div class="form-grid compact">
+                                        <div class="field">
+                                            <label for="grade_student_code">كود الطالب *</label>
+                                            <input id="grade_student_code" name="student_code" type="text"
+                                                placeholder="مثال: STU2026004" list="studentsCodeSuggestions"
+                                                autocomplete="off" required>
+                                            <input id="grade_student_id" name="student_id" type="hidden">
+                                            <p id="gradeStudentHint" class="muted">أدخل كود الطالب كما هو مسجل.</p>
+                                        </div>
+                                        <div class="field">
+                                            <label for="subject_name">المادة *</label>
+                                            <select id="subject_name_select" name="subject_name_select" required
+                                                onchange="toggleOtherSubjectInput('grades')">
+                                                <option value="">اختر المادة</option>
+                                                <option value="رياضيات">رياضيات</option>
+                                                <option value="فيزياء">فيزياء</option>
+                                                <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                <option value="لغة عربية">لغة عربية</option>
+                                                <option value="لغة فرنسية">لغة فرنسية</option>
+                                                <option value="لغة إنجليزية">لغة إنجليزية</option>
+                                                <option value="تربية إسلامية">تربية إسلامية</option>
+                                                <option value="تاريخ وجغرافيا">تاريخ وجغرافيا</option>
+                                                <option value="معلوميات">معلوميات</option>
+                                                <option value="تربية بدنية">تربية بدنية</option>
+                                                <option value="فلسفة">فلسفة</option>
+                                                <option value="علوم اقتصادية">علوم اقتصادية</option>
+                                                <option value="أخرى">أخرى</option>
+                                            </select>
+                                            <input id="subject_name_other_grades" name="subject_name" type="text"
+                                                placeholder="اكتب اسم المادة"
+                                                style="display:none; margin-top:0.5rem;" />
+                                        </div>
+                                        <div class="field">
+                                            <label for="continuous_score">نقطة المراقبة *</label>
+                                            <input id="continuous_score" name="continuous_score" type="number" min="0"
+                                                max="20" step="0.01" required>
+                                        </div>
+                                        <div class="field">
+                                            <label for="exam_score">نقطة الامتحان *</label>
+                                            <input id="exam_score" name="exam_score" type="number" min="0" max="20"
+                                                step="0.01" required>
+                                        </div>
+                                        <div class="field">
+                                            <label for="coefficient">المعامل</label>
+                                            <input id="coefficient" name="coefficient" type="number" min="0.5" max="10"
+                                                step="0.01" value="1.00">
+                                        </div>
+                                        <div class="field">
+                                            <label for="semester">الدورة</label>
+                                            <select id="semester" name="semester">
+                                                <option value="S1">S1</option>
+                                                <option value="S2">S2</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa-solid fa-plus"></i>
+                                        إضافة النقطة
+                                    </button>
+                                    <button type="button" id="sendWhatsappGradesBtn" class="btn btn-outline" style="color: #10b981; border-color: #10b981; font-weight: 700; margin-top: 0.5rem;">
+                                        <i class="fa-brands fa-whatsapp"></i> إشعار النقط عبر WhatsApp
+                                    </button>
+                                </form>
+                                <div id="gradeFeedback" class="feedback" aria-live="polite"></div>
+                            </article>
+                        </section>
+
+                        <section id="attendanceTab" class="tab-panel">
+                            <article class="admin-block">
+                                <h3><i class="fa-solid fa-user-clock"></i> إدخال غياب</h3>
+                                <form id="attendanceAdminForm" action="backend/admin_records.php" method="post">
+                                    <div class="form-grid compact">
+                                        <div class="field">
+                                            <label for="attendance_student_code">كود الطالب *</label>
+                                            <input id="attendance_student_code" name="student_code" type="text"
+                                                placeholder="مثال: STU2026004" list="studentsCodeSuggestions"
+                                                autocomplete="off" required>
+                                            <input id="attendance_student_id" name="student_id" type="hidden">
+                                            <p id="attendanceStudentHint" class="muted">أدخل كود الطالب كما هو مسجل.</p>
+                                        </div>
+                                        <div class="field">
+                                            <label for="absence_date">تاريخ الغياب *</label>
+                                            <input id="absence_date" name="absence_date" type="date" required>
+                                        </div>
+                                        <div class="field">
+                                            <label for="session_label">الحصة *</label>
+                                            <select id="session_label" name="session_label" required>
+                                                <option value="Matin">Matin</option>
+                                                <option value="Après-midi">Après-midi</option>
+                                                <option value="Journée complète">Journée complète (اليوم كامل)</option>
+                                            </select>
+                                        </div>
+                                        <div class="field">
+                                            <label for="absence_subject">المادة *</label>
+                                            <select id="absence_subject_select" name="absence_subject_select" required
+                                                onchange="toggleOtherSubjectInput('attendance')">
+                                                <option value="">اختر المادة</option>
+                                                <option value="رياضيات">رياضيات</option>
+                                                <option value="فيزياء">فيزياء</option>
+                                                <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                <option value="لغة عربية">لغة عربية</option>
+                                                <option value="لغة فرنسية">لغة فرنسية</option>
+                                                <option value="لغة إنجليزية">لغة إنجليزية</option>
+                                                <option value="تربية إسلامية">تربية إسلامية</option>
+                                                <option value="تاريخ وجغرافيا">تاريخ وجغرافيا</option>
+                                                <option value="معلوميات">معلوميات</option>
+                                                <option value="تربية بدنية">تربية بدنية</option>
+                                                <option value="فلسفة">فلسفة</option>
+                                                <option value="علوم اقتصادية">علوم اقتصادية</option>
+                                                <option value="أخرى">أخرى</option>
+                                            </select>
+                                            <input id="absence_subject_other_attendance" name="absence_subject"
+                                                type="text" placeholder="اكتب اسم المادة"
+                                                style="display:none; margin-top:0.5rem;" />
+                                        </div>
+                                        <div class="field">
+                                            <label for="justified">الحالة</label>
+                                            <select id="justified" name="justified">
+                                                <option value="0">غير مبرر</option>
+                                                <option value="1">مبرر</option>
+                                            </select>
+                                        </div>
+                                        <div class="field field-full">
+                                            <label for="absence_notes">ملاحظة</label>
+                                            <input id="absence_notes" name="notes" type="text"
+                                                placeholder="تفاصيل إضافية">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa-solid fa-calendar-plus"></i>
+                                        تسجيل الغياب
+                                    </button>
+                                    <button type="button" id="sendWhatsappAbsenceBtn" class="btn btn-outline" style="color: #10b981; border-color: #10b981; font-weight: 700; margin-top: 0.5rem;">
+                                        <i class="fa-brands fa-whatsapp"></i> إرسال إشعار WhatsApp لولي الأمر
+                                    </button>
+                                </form>
+                                <div id="attendanceAdminFeedback" class="feedback" aria-live="polite"></div>
+                            </article>
+                        </section>
+
+                        <section id="lessonsTab" class="tab-panel">
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-circle-plus"></i> إضافة / تعديل درس</h3>
+                                    <p class="helper">استعمل روابط حقيقية: فيديو YouTube/Vimeo أو mp4، ملفات PDF مباشرة،
+                                        وصور بروابط مباشرة (jpg/png/webp).</p>
+                                    <form id="lessonAdminForm" action="backend/admin_lessons.php" method="post">
+                                        <input id="lesson_id" name="lesson_id" type="hidden">
+                                        <input name="action" type="hidden" value="save">
+                                        <div class="form-grid compact">
+                                            <div class="field">
+                                                <label for="lesson_title">عنوان الدرس *</label>
+                                                <input id="lesson_title" name="title" type="text" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_type">النوع *</label>
+                                                <select id="lesson_type" name="lesson_type" required>
+                                                    <option value="video">Video</option>
+                                                    <option value="pdf">PDF</option>
+                                                    <option value="image">Image</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_level">المستوى</label>
+                                                <input id="lesson_level" name="level" type="text"
+                                                    placeholder="Collège / Lycée">
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_subject">المادة</label>
+                                                <input id="lesson_subject" name="subject_name" type="text"
+                                                    placeholder="Mathématiques">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_description">وصف الدرس</label>
+                                                <textarea id="lesson_description" name="description" rows="3"
+                                                    placeholder="وصف مختصر للدرس"></textarea>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_file">رفع ملف من الحاسوب (يُغني عن الرابط)</label>
+                                                <input id="lesson_file" name="lesson_file" type="file"
+                                                    accept=".pdf,.mp4,.webm,.jpg,.png,.webp,.gif">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_content_url">رابط المحتوى (اختياري إذا تم رفع
+                                                    ملف)</label>
+                                                <input id="lesson_content_url" name="content_url" type="url"
+                                                    placeholder="https://...">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_thumbnail_url">رابط الصورة المصغرة (اختياري)</label>
+                                                <input id="lesson_thumbnail_url" name="thumbnail_url" type="url"
+                                                    placeholder="https://...">
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_published">الحالة</label>
+                                                <select id="lesson_published" name="is_published">
+                                                    <option value="1">منشور</option>
+                                                    <option value="0">مسودة</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="actions-row">
+                                            <button id="lessonSubmitBtn" class="btn btn-primary" type="submit">
+                                                <i class="fa-solid fa-floppy-disk"></i>
+                                                حفظ الدرس
+                                            </button>
+                                            <a class="btn btn-outline" href="lessons.html" target="_blank"
+                                                rel="noopener noreferrer">
+                                                <i class="fa-solid fa-up-right-from-square"></i>
+                                                فتح صفحة الدروس
+                                            </a>
+                                            <button id="lessonResetBtn" class="btn btn-outline" type="button">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                                تفريغ الحقول
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div id="lessonAdminFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-list"></i> لائحة الدروس</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>العنوان</th>
+                                                    <th>النوع</th>
+                                                    <th>المستوى</th>
+                                                    <th>المادة</th>
+                                                    <th>الحالة</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="lessonsTableBody">
+                                                <tr>
+                                                    <td colspan="6">قم بتسجيل الدخول للإدارة أولا.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="lessonsTableFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section id="galleryTab" class="tab-panel">
+                            <div class="tab-grid">
+                                <article class="admin-block full-width">
+                                    <h3><i class="fa-solid fa-image"></i> إدارة معرض الصور</h3>
+                                    <p class="helper">قم بإضافة أو تعديل أو حذف صور الرحلات والفعاليات والحفلات والأنشطة
+                                    </p>
+                                </article>
+
+                                <!-- Upload New Photo -->
+                                <article class="admin-block">
+                                    <h3>إضافة صورة جديدة</h3>
+                                    <form id="galleryUploadForm" enctype="multipart/form-data">
+                                        <div class="form-grid">
+                                            <div class="field field-full">
+                                                <label for="photo_title">اسم الصورة *</label>
+                                                <input id="photo_title" name="title" type="text"
+                                                    placeholder="مثال:رحلة / ندوة /حفل تكريم /بطولة رياضية ." required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="photo_description">الوصف</label>
+                                                <textarea id="photo_description" name="description"
+                                                    placeholder="وصف الصورة والحدث..." rows="3"></textarea>
+                                            </div>
+                                            <div class="field">
+                                                <label for="photo_category">الفئة *</label>
+                                                <input id="photo_category" name="category" type="text"
+                                                    placeholder="رحلات، فعاليات، حفلات، أنشطة..." list="categoryList"
+                                                    autocomplete="off" required>
+                                                <datalist id="categoryList">
+                                                    <option value="trips">الرحلات</option>
+                                                    <option value="events">الفعاليات</option>
+                                                    <option value="ceremonies">الحفلات</option>
+                                                    <option value="activities">الأنشطة</option>
+                                                </datalist>
+                                            </div>
+                                            <div class="field">
+                                                <label for="photo_location">المكان / الموقع</label>
+                                                <input id="photo_location" name="location" type="text"
+                                                    placeholder="مراكش، الدار البيضاء، أو أي مكان آخر..."
+                                                    list="cityList" autocomplete="off">
+                                                <datalist id="cityList">
+                                                    <option value="الرباط">
+                                                    <option value="الدار البيضاء">
+                                                    <option value="فاس">
+                                                    <option value="مراكش">
+                                                    <option value="آسفي">
+                                                    <option value="الصويرة">
+                                                    <option value="تطوان">
+                                                    <option value="طنجة">
+                                                    <option value="تازة">
+                                                    <option value="مكناس">
+                                                    <option value="القنيطرة">
+                                                    <option value="سلا">
+                                                    <option value="الشلالات">
+                                                    <option value="المتحف الوطني">
+                                                    <option value="المدرسة">
+                                                </datalist>
+                                            </div>
+                                            <div class="field">
+                                                <label for="photo_date">تاريخ الصورة</label>
+                                                <input id="photo_date" name="photo_date" type="date">
+                                            </div>
+                                            <div class="field">
+                                                <label for="photo_author">المؤلف</label>
+                                                <input id="photo_author" name="author_name" type="text"
+                                                    placeholder="المؤسسة">
+                                            </div>
+                                            <div class="field">
+                                                <label for="photo_image">الصورة *</label>
+                                                <input id="photo_image" name="image" type="file"
+                                                    accept="image/jpeg,image/png,image/webp" required>
+                                                <small>JPG, PNG أو WebP - الحد الأقصى: 5MB</small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-upload"></i> رفع الصورة
+                                        </button>
+                                        <div id="uploadFeedback" class="feedback" aria-live="polite"></div>
+                                    </form>
+                                </article>
+
+                                <!-- Photos List -->
+                                <article class="admin-block full-width">
+                                    <h3>جميع الصور</h3>
+                                    <div class="form-grid compact">
+                                        <button id="loadAllPhotosBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-refresh"></i> تحميل جميع الصور
+                                        </button>
+                                    </div>
+                                    <div id="galleryPhotosList"
+                                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.2rem; margin-top: 1.5rem;">
+                                        <p class="muted">اضغط على زر "تحميل الصور" لعرض جميع الصور في المعرض</p>
+                                    </div>
+                                    <div id="galleryListFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <!-- Edit Photo Panel (Inline Full Width, No Backdrop Fog) -->
+                                <article id="galleryEditModal" class="admin-block full-width" style="display: none; border: 2px solid #1fa8cf; background: #ffffff; box-shadow: 0 10px 30px rgba(31, 168, 207, 0.12); margin-bottom: 2rem; scroll-margin-top: 2rem;">
+                                    <div class="admin-modal-header" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                                        <div class="admin-modal-title-wrapper">
+                                            <div class="admin-modal-icon">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </div>
+                                            <div>
+                                                <h3 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: #0f172a;">تعديل بيانات الصورة</h3>
+                                                <p class="admin-modal-subtitle" style="margin: 0.2rem 0 0; font-size: 0.88rem; color: #64748b;">قم بتحديث معلومات الصورة أو استبدال الملف مباشرة</p>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline" id="closeGalleryEditModalBtn" style="border-radius: 0.8rem; padding: 0.5rem 1rem;">
+                                            <i class="fa-solid fa-xmark"></i> إغلاق التعديل
+                                        </button>
+                                    </div>
+
+                                    <form id="galleryEditForm" enctype="multipart/form-data" class="admin-modal-form">
+                                        <input type="hidden" id="edit_photo_id" name="id">
+
+                                        <!-- Top Image Card section: preview + new image selector -->
+                                        <div class="modal-preview-card">
+                                            <div class="modal-preview-box">
+                                                <img id="edit_photo_preview" src="" alt="معاينة الصورة">
+                                                <span class="preview-badge"><i class="fa-solid fa-image"></i> الصورة الحالية</span>
+                                            </div>
+                                            <div class="modal-upload-box">
+                                                <label class="modal-file-label" for="edit_photo_image">
+                                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                                    <span>تغيير ملف الصورة (اختياري)</span>
+                                                    <small>انقر لاختيار صورة جديدة من جهازك (JPG, PNG, WebP • حد أقصى 5MB)</small>
+                                                </label>
+                                                <input id="edit_photo_image" name="image" type="file" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                                                <div id="selected_file_info" class="selected-file-info" style="display: none;">
+                                                    <i class="fa-solid fa-circle-check"></i> <span id="file_name_text"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Form Fields Grid -->
+                                        <div class="modal-form-grid">
+                                            <div class="modal-field full-width">
+                                                <label for="edit_photo_title"><i class="fa-solid fa-heading"></i> اسم الصورة <span class="required" style="color: #ef4444;">*</span></label>
+                                                <input id="edit_photo_title" name="title" type="text" placeholder="أدخل اسم أو عنوان الصورة..." required>
+                                            </div>
+
+                                            <div class="modal-field full-width">
+                                                <label for="edit_photo_description"><i class="fa-solid fa-align-left"></i> الوصف التفصيلي</label>
+                                                <textarea id="edit_photo_description" name="description" placeholder="اكتب وصفاً مختصراً للحدث أو الفعالية..." rows="3"></textarea>
+                                            </div>
+
+                                            <div class="modal-field">
+                                                <label for="edit_photo_category"><i class="fa-solid fa-layer-group"></i> الفئة <span class="required" style="color: #ef4444;">*</span></label>
+                                                <div class="select-wrapper">
+                                                    <select id="edit_photo_category" name="category" required>
+                                                        <option value="trips">الرحلات</option>
+                                                        <option value="events">الفعاليات</option>
+                                                        <option value="ceremonies">الحفلات</option>
+                                                        <option value="activities">الأنشطة</option>
+                                                        <option value="other">أخرى</option>
+                                                    </select>
+                                                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-field">
+                                                <label for="edit_photo_location"><i class="fa-solid fa-location-dot"></i> المكان / الموقع</label>
+                                                <input id="edit_photo_location" name="location" type="text" placeholder="مثال: الرباط، مراكش..." list="cityList" autocomplete="off">
+                                            </div>
+
+                                            <div class="modal-field">
+                                                <label for="edit_photo_date"><i class="fa-solid fa-calendar-days"></i> تاريخ الصورة</label>
+                                                <input id="edit_photo_date" name="photo_date" type="date">
+                                            </div>
+
+                                            <div class="modal-field">
+                                                <label for="edit_photo_author"><i class="fa-solid fa-user-pen"></i> الناشر / المصور</label>
+                                                <input id="edit_photo_author" name="author_name" type="text" placeholder="إدارة المؤسسة">
+                                            </div>
+
+                                            <div class="modal-field">
+                                                <label for="edit_photo_status"><i class="fa-solid fa-toggle-on"></i> حالة عرض الصورة</label>
+                                                <div class="select-wrapper">
+                                                    <select id="edit_photo_status" name="is_published">
+                                                        <option value="1">🟢 منشورة (تظهر بالمعرض)</option>
+                                                        <option value="0">🟠 مخفية (حفظ كمسودة)</option>
+                                                    </select>
+                                                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="editFeedback" class="feedback" aria-live="polite" style="display: none; margin-top: 1rem;"></div>
+
+                                        <div class="admin-modal-footer">
+                                            <button type="button" class="btn btn-modal-cancel" id="cancelGalleryEditBtn">
+                                                <i class="fa-solid fa-xmark"></i> إلغاء
+                                            </button>
+                                            <button type="submit" class="btn btn-modal-save" id="saveGalleryEditBtn">
+                                                <i class="fa-solid fa-check"></i> حفظ التغييرات
+                                            </button>
+                                        </div>
+                                    </form>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- ========== COURSES TAB ========== -->
+                        <section id="coursesTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block full-width">
+                                    <h3><i class="fa-solid fa-graduation-cap"></i> إدارة الشعب والبرامج التعليمية (صفحة courses.html)</h3>
+                                    <p class="helper">قم بإضافة، تعديل، أو حذف الشعب والمسالك الدراسية المعروضة في الصفحة الرئيسية وصفحة الشعب والبرامج.</p>
+                                </article>
+
+                                <!-- Add New Course Form -->
+                                <article class="admin-block">
+                                    <h3>إضافة شعبة / برنامج دراسي جديد</h3>
+                                    <form id="courseAddForm" enctype="multipart/form-data">
+                                        <div class="form-grid">
+                                            <div class="field field-full">
+                                                <label for="course_title">عنوان الشعبة / المسلك *</label>
+                                                <input id="course_title" name="title" type="text" placeholder="مثال: مسلك العلوم الرياضية (أ / ب)" required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="course_description">وصف الشعبة والمسلك</label>
+                                                <textarea id="course_description" name="description" placeholder="وصف للأهداف، المواد، والتأهيل الأكاديمي..." rows="3"></textarea>
+                                            </div>
+                                            <div class="field">
+                                                <label for="course_category">الفئة / المستوى *</label>
+                                                <select id="course_category" name="category" required>
+                                                    <option value="middle">الثانوي الإعدادي</option>
+                                                    <option value="science">العلوم والتكنولوجيا (تأهيلي)</option>
+                                                    <option value="arts">الآداب والعلوم الإنسانية (تأهيلي)</option>
+                                                    <option value="support">الدعم واللغات</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="course_level_tag">بطاقة الوصف / وسم الشعبة</label>
+                                                <input id="course_level_tag" name="level_tag" type="text" placeholder="مثال: مسلك علمي / 3 سنوات دراسية / لغات حية">
+                                            </div>
+                                            <div class="field">
+                                                <label for="course_published">الحالة</label>
+                                                <select id="course_published" name="is_published">
+                                                    <option value="1">منشور (ظاهر في الموقع)</option>
+                                                    <option value="0">مسودة (غير ظاهر)</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="course_image">صورة الشعبة *</label>
+                                                <input id="course_image" name="image_file" type="file" accept="image/jpeg,image/png,image/webp">
+                                                <small>اختر صورة ممثلة للشعبة (JPG, PNG, WebP)</small>
+                                            </div>
+                                        </div>
+                                        <div class="actions-row" style="margin-top: 1rem;">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fa-solid fa-plus"></i> إضافة الشعبة
+                                            </button>
+                                            <a class="btn btn-outline" href="courses.html" target="_blank" rel="noopener noreferrer">
+                                                <i class="fa-solid fa-up-right-from-square"></i> معاينة صفحة الشعب والبرامج
+                                            </a>
+                                        </div>
+                                        <div id="courseAddFeedback" class="feedback" aria-live="polite"></div>
+                                    </form>
+                                </article>
+
+                                <!-- Courses List -->
+                                <article class="admin-block full-width">
+                                    <h3>جميع الشعب والبرامج الدراسية</h3>
+                                    <div class="form-grid compact">
+                                        <button id="loadAllCoursesBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-rotate"></i> تحديث لائحة الشعب
+                                        </button>
+                                    </div>
+                                    <div id="adminCoursesList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 1.5rem;">
+                                        <p class="muted">جاري تحميل الشعب والبرامج...</p>
+                                    </div>
+                                    <div id="adminCoursesListFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <!-- Inline Edit Course Panel -->
+                                <article id="courseEditPanel" class="admin-block full-width" style="display: none; border: 2px solid #1fa8cf; background: #ffffff; box-shadow: 0 10px 30px rgba(31, 168, 207, 0.12); margin-bottom: 2rem; scroll-margin-top: 2rem;">
+                                    <div class="admin-modal-header" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <h3 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات الشعبة / البرنامج</h3>
+                                            <p style="margin: 0.2rem 0 0; font-size: 0.88rem; color: #64748b;">قم بتحديث معلومات الشعبة أو استبدال الصورة المميزة</p>
+                                        </div>
+                                        <button type="button" class="btn btn-outline" id="closeCourseEditPanelBtn" style="border-radius: 0.8rem; padding: 0.5rem 1rem;">
+                                            <i class="fa-solid fa-xmark"></i> إغلاق التعديل
+                                        </button>
+                                    </div>
+
+                                    <form id="courseEditForm" enctype="multipart/form-data">
+                                        <input type="hidden" id="edit_course_id" name="id">
+
+                                        <div class="form-grid">
+                                            <div class="field field-full">
+                                                <label for="edit_course_title">عنوان الشعبة *</label>
+                                                <input id="edit_course_title" name="title" type="text" required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="edit_course_description">وصف الشعبة</label>
+                                                <textarea id="edit_course_description" name="description" rows="3"></textarea>
+                                            </div>
+                                            <div class="field">
+                                                <label for="edit_course_category">الفئة *</label>
+                                                <select id="edit_course_category" name="category" required>
+                                                    <option value="middle">الثانوي الإعدادي</option>
+                                                    <option value="science">العلوم والتكنولوجيا (تأهيلي)</option>
+                                                    <option value="arts">الآداب والعلوم الإنسانية (تأهيلي)</option>
+                                                    <option value="support">الدعم واللغات</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="edit_course_level_tag">وسم الشعبة</label>
+                                                <input id="edit_course_level_tag" name="level_tag" type="text">
+                                            </div>
+                                            <div class="field">
+                                                <label for="edit_course_published">الحالة</label>
+                                                <select id="edit_course_published" name="is_published">
+                                                    <option value="1">منشور (ظاهر بالموقع)</option>
+                                                    <option value="0">مسودة (مخفي)</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="edit_course_image">تغيير الصورة (اختياري)</label>
+                                                <input id="edit_course_image" name="image_file" type="file" accept="image/jpeg,image/png,image/webp">
+                                            </div>
+                                        </div>
+
+                                        <div class="actions-row" style="margin-top: 1.5rem;">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fa-solid fa-floppy-disk"></i> حفظ التغييرات
+                                            </button>
+                                            <button type="button" class="btn btn-outline" id="cancelCourseEditBtn">
+                                                <i class="fa-solid fa-ban"></i> إلغاء
+                                            </button>
+                                        </div>
+                                        <div id="courseEditFeedback" class="feedback" aria-live="polite"></div>
+                                    </form>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- ========== MESSAGES TAB ========== -->
+                        <section id="messagesTab" class="tab-panel" data-role-only="director" hidden>
+                            <article class="admin-block">
+                                <h3><i class="fa-solid fa-envelope"></i> رسائل التواصل مع الإدارة</h3>
+                                <button id="refreshMessagesBtn" class="btn btn-outline" type="button"
+                                    style="margin-bottom: 1rem;">
+                                    <i class="fa-solid fa-rotate"></i> تحديث الرسائل
+                                </button>
+                                <div id="messagesList">
+                                    <p class="muted">اضغط على زر "تحديث الرسائل" لجلب الرسائل الجديدة.</p>
+                                </div>
+                            </article>
+                        </section>
+
+                        <!-- ========== TEACHERS TAB ========== -->
+                        <section id="teachersTab" class="tab-panel" data-role-only="director" hidden>
+                            <article class="admin-block teachers-admin-block">
+                                <div class="teachers-admin-head">
+                                    <h3><i class="fa-solid fa-chalkboard-teacher"></i> إدارة الأساتذة</h3>
+                                    <button id="refreshTeachersBtn" class="btn btn-outline" type="button">
+                                        <i class="fa-solid fa-rotate"></i> تحديث
+                                    </button>
+                                </div>
+
+                                <p id="teachersPendingStatus" class="teacher-pending-status muted">
+                                    اضغط على «تحديث» لعرض طلبات التسجيل والأساتذة.
+                                </p>
+                                <div id="teachersPendingList" class="teacher-list teacher-pending-list" hidden></div>
+
+                                <h4 class="teachers-list-title">قائمة الأساتذة</h4>
+                                <div id="teachersRegisteredList" class="teacher-list">
+                                    <p class="teacher-empty muted">لا يوجد أساتذة مسجّلون بعد.</p>
+                                </div>
+                            </article>
+                        </section>
+
+                        <!-- ========== TEACHER ABSENCES TAB ========== -->
+                        <section id="teacherAbsencesTab" class="tab-panel" hidden>
+                            <article class="admin-block full-width">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                                    <h3><i class="fa-solid fa-calendar-xmark"></i> إشعارات وتصريحات غياب الأساتذة</h3>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button id="refreshTeacherAbsencesBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-rotate"></i> تحديث القائمة
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="helper">
+                                    يمكن لجميع أعضاء الإدارة (المدير والسكرتارية) الاطلاع على تصريحات الغياب وعلامات
+                                    الاستعجال 🚨. بينما يختص <strong>المدير حصراً</strong> بالرد والموافقة/الرفض
+                                    والتواصل المباشر مع الأستاذ.
+                                </p>
+                                <div class="table-tools" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.2rem;">
+                                    <div class="field">
+                                        <label for="teacherAbsenceFilterStatus">تصفية حسب الحالة</label>
+                                        <select id="teacherAbsenceFilterStatus">
+                                            <option value="pending" selected>جديدة (قيد المراجعة)</option>
+                                            <option value="">جميع الحالات</option>
+                                            <option value="approved">مقبول</option>
+                                            <option value="rejected">مرفوض</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="teacherAbsenceFilterUrgent">درجة الاستعجال 🚨</label>
+                                        <select id="teacherAbsenceFilterUrgent">
+                                            <option value="">الكل</option>
+                                            <option value="urgent">🚨 عاجل / طوارئ فقط</option>
+                                            <option value="normal">عادي فقط</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="table-wrap">
+                                    <table class="result-table">
+                                        <thead>
+                                            <tr>
+                                                <th>الأستاذ والمادة</th>
+                                                <th>تاريخ ونوع الغياب</th>
+                                                <th>علامة الاستعجال 🚨</th>
+                                                <th>السبب والمرفق</th>
+                                                <th>الحالة والرد الإداري</th>
+                                                <th>الإجراءات والتواصل</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teacherAbsencesAdminTableBody">
+                                            <tr>
+                                                <td colspan="6" class="muted">قم بتسجيل الدخول للإدارة أولاً.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="teacherAbsencesAdminFeedback" class="feedback" aria-live="polite"></div>
+                            </article>
+                        </section>
+
+                        <!-- ========== PROMOTION TAB ========= -->
+                        <section id="promotionTab" class="tab-panel" data-role-only="director" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block full-width">
+                                    <h3><i class="fa-solid fa-arrow-up-right-dots"></i> الترحيل السنوي للتلاميذ</h3>
+                                    <p class="helper">نظام الترحيل التلقائي: حساب المعدلات، تحديد الناجحين والراسبين،
+                                        وتوزيع التلاميذ على الأقسام (حد أقصى 30 تلميذ/قسم).</p>
+
+                                    <div class="promotion-actions-bar">
+                                        <button id="promotionPreviewBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-eye"></i>
+                                            معاينة النتائج
+                                        </button>
+                                        <button id="promotionExecuteBtn" class="btn btn-primary" type="button">
+                                            <i class="fa-solid fa-rocket"></i>
+                                            🚀 لانسي الترحيل السنوي
+                                        </button>
+                                        <button id="promotionHistoryBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-clock-rotate-left"></i>
+                                            سجل الترحيلات
+                                        </button>
+                                    </div>
+
+                                    <div id="promotionFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <!-- Stats Cards -->
+                                <div id="promotionStatsCards" class="promotion-stats-cards" hidden>
+                                    <div class="promo-stat-card promo-card-total">
+                                        <i class="fa-solid fa-users"></i>
+                                        <div class="promo-stat-value" id="promoStatTotal">0</div>
+                                        <div class="promo-stat-label">مجموع التلاميذ</div>
+                                    </div>
+                                    <div class="promo-stat-card promo-card-admis">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <div class="promo-stat-value" id="promoStatAdmis">0</div>
+                                        <div class="promo-stat-label">ناجحون</div>
+                                    </div>
+                                    <div class="promo-stat-card promo-card-redoublant">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                        <div class="promo-stat-value" id="promoStatRedoublants">0</div>
+                                        <div class="promo-stat-label">راسبون</div>
+                                    </div>
+                                    <div class="promo-stat-card promo-card-classes">
+                                        <i class="fa-solid fa-school"></i>
+                                        <div class="promo-stat-value" id="promoStatClasses">0</div>
+                                        <div class="promo-stat-label">أقسام مُنشأة</div>
+                                    </div>
+                                </div>
+
+                                <!-- Preview Table -->
+                                <article id="promotionPreviewBlock" class="admin-block full-width" hidden>
+                                    <h3><i class="fa-solid fa-table-list"></i> معاينة نتائج التلاميذ — <span
+                                            id="promoAnneeLabel"></span></h3>
+                                    <div class="table-tools">
+                                        <div class="field">
+                                            <label for="promoFilterResult">تصفية حسب النتيجة</label>
+                                            <select id="promoFilterResult">
+                                                <option value="">الكل</option>
+                                                <option value="admis">ناجح</option>
+                                                <option value="redoublant">راسب</option>
+                                                <option value="en_cours">بدون نقط</option>
+                                            </select>
+                                        </div>
+                                        <div class="field">
+                                            <label for="promoFilterLevel">تصفية حسب المستوى</label>
+                                            <select id="promoFilterLevel">
+                                                <option value="">كل المستويات</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>الكود</th>
+                                                    <th>الاسم الكامل</th>
+                                                    <th>المستوى الحالي</th>
+                                                    <th>م. د1</th>
+                                                    <th>م. د2</th>
+                                                    <th>المعدل العام</th>
+                                                    <th>الميزة</th>
+                                                    <th>النتيجة</th>
+                                                    <th>المستوى القادم</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="promotionPreviewBody">
+                                                <tr>
+                                                    <td colspan="9" class="muted">اضغط "معاينة النتائج" لعرض البيانات.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+
+                                <!-- Repartition par classes -->
+                                <article id="promotionRepartitionBlock" class="admin-block full-width" hidden>
+                                    <h3><i class="fa-solid fa-sitemap"></i> توزيع التلاميذ على الأقسام</h3>
+                                    <div id="promotionRepartitionContent"></div>
+                                </article>
+
+                                <!-- Historique -->
+                                <article id="promotionHistoryBlock" class="admin-block full-width" hidden>
+                                    <h3><i class="fa-solid fa-clock-rotate-left"></i> سجل الترحيلات السابقة</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>من سنة</th>
+                                                    <th>إلى سنة</th>
+                                                    <th>مجموع التلاميذ</th>
+                                                    <th>ناجحون</th>
+                                                    <th>راسبون</th>
+                                                    <th>أقسام</th>
+                                                    <th>التاريخ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="promotionHistoryBody">
+                                                <tr>
+                                                    <td colspan="8" class="muted">جاري التحميل...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+                        <!-- ========== END PROMOTION TAB ========== -->
+
+                        <!-- ========== REPORTS TAB ========== -->
+                        <section id="reportsTab" class="tab-panel" data-role-only="director" hidden>
+                            <div class="reports-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-file-lines"></i> تقرير النقط</h3>
+                                    <div class="form-grid compact">
+                                        <div class="field">
+                                            <label for="gradesViewStudent">التلميذ *</label>
+                                            <select id="gradesViewStudent" name="grades_student_id" required>
+                                                <option value="">اختر تلميذا</option>
+                                            </select>
+                                        </div>
+                                        <div class="field">
+                                            <label for="gradesSemesterFilter">الدورة</label>
+                                            <select id="gradesSemesterFilter" name="grades_semester">
+                                                <option value="">كل الدورات</option>
+                                                <option value="S1">S1</option>
+                                                <option value="S2">S2</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button id="viewGradesBtn" class="btn btn-primary" type="button">
+                                        <i class="fa-solid fa-eye"></i>
+                                        عرض النقط
+                                    </button>
+                                    <div id="gradesViewResult" class="result-box view-box">
+                                        <p class="muted">اختر تلميذا لعرض نقاطه.</p>
+                                    </div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-calendar-check"></i> تقرير الغياب</h3>
+                                    <div class="form-grid compact">
+                                        <div class="field">
+                                            <label for="filiereFilter">الشعبة</label>
+                                            <select id="filiereFilter" name="filiereFilter">
+                                                <option value="">كل الشعب</option>
+                                                <option value="علوم رياضية">علوم رياضية</option>
+                                                <option value="علوم فيزيائية">علوم فيزيائية</option>
+                                                <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                <option value="آداب">آداب</option>
+                                                <option value="اقتصاد">اقتصاد</option>
+                                            </select>
+                                        </div>
+                                        <div class="field">
+                                            <label for="attendanceViewStudent">التلميذ *</label>
+                                            <select id="attendanceViewStudent" name="attendance_student_id">
+                                                <option value="">اختر تلميذا</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                    <button id="viewAttendanceBtn" class="btn btn-primary" type="button">
+                                        <i class="fa-solid fa-eye"></i>
+                                        عرض الغياب
+                                    </button>
+                                    <div id="attendanceViewResult" class="result-box view-box">
+                                        <p class="muted">اختر تلميذا أو أدخل رقمه لعرض سجل غيابه.</p>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+                        <!-- ========== END REPORTS TAB ========= -->
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>© 2026 مؤسسة Kawkab Al Ouloum التعليمية. جميع الحقوق محفوظة.</p>
+            <a href="index.html">الصفحة الرئيسية</a>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/admin.js?v=20260722_v2"></script>
+    <script>
+        // جلب الرسائل من backend وعرضها
+        async function loadMessagesList() {
+            var messagesList = document.getElementById('messagesList');
+            if (!messagesList) {
+                console.error('messagesList element not found');
+                return;
+            }
+            messagesList.innerHTML = '<p class="muted"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الرسائل...</p>';
+            console.log('Loading messages...');
+            try {
+                const formData = new FormData();
+                formData.append('action', 'list');
+
+                const response = await fetch('backend/admin_messages.php', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    messagesList.innerHTML = '<p class="muted"><i class="fa-solid fa-circle-exclamation"></i> خطأ: ' + response.status + ' - تعذر جلب الرسائل.</p>';
+                    return;
+                }
+
+                const payload = await response.json();
+                console.log('Payload:', payload);
+
+                if (!payload.success) {
+                    messagesList.innerHTML = '<p class="muted"><i class="fa-solid fa-circle-exclamation"></i> ' + (payload.message || 'تعذر جلب الرسائل.') + '</p>';
+                    return;
+                }
+                const messages = payload.data && Array.isArray(payload.data.messages) ? payload.data.messages : [];
+                console.log('Messages count:', messages.length);
+
+                if (messages.length === 0) {
+                    messagesList.innerHTML = '<p class="muted">لا توجد رسائل بعد.</p>';
+                    return;
+                }
+
+                let html = '<div style="display: flex; flex-direction: column; gap: 1rem;">';
+                messages.forEach((msg, idx) => {
+                    let statusColor = msg.status === 'new' ? '#4CAF50' : msg.status === 'in_progress' ? '#FFC107' : '#999';
+                    let statusLabel = msg.status === 'new' ? 'جديدة' : msg.status === 'in_progress' ? 'قيد المعالجة' : 'مغلقة';
+                    html += `
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem; background: #f9f9f9;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                    <div>
+                                        <strong style="font-size: 1.1rem;">من: ${escapeHtml(msg.name)}</strong>
+                                        <span style="color: #666; margin-right: 1rem; font-size: 0.9rem;">${msg.created_at}</span>
+                                    </div>
+                                    <span style="background: ${statusColor}; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem;">${statusLabel}</span>
+                                </div>
+                                <div style="margin: 0.5rem 0;">
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <strong>البريد الإلكتروني:</strong> 
+                                        <span>${escapeHtml(msg.email)}</span>
+                                        <button onclick="copyToClipboard('${msg.email}')" style="background: none; border: none; color: #0066cc; cursor: pointer; margin-right: 0.5rem;" title="نسخ">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    ${msg.phone ? `
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <strong>الهاتف:</strong>
+                                        <span>${escapeHtml(msg.phone)}</span>
+                                        <button onclick="copyToClipboard('${msg.phone}')" style="background: none; border: none; color: #0066cc; cursor: pointer; margin-right: 0.5rem;" title="نسخ">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    ` : ''}
+                                    ${msg.subject ? `
+                                    <div style="margin-bottom: 0.5rem;">
+                                        <strong>الموضوع:</strong> ${escapeHtml(msg.subject)}
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                <div style="background: white; padding: 0.8rem; border-radius: 4px; margin: 0.5rem 0; border-right: 3px solid #0066cc;">
+                                    <p style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(msg.message).replace(/\n/g, '<br>')}</p>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                    ${msg.status !== 'closed' ? `
+                                    <button onclick="updateMessageStatus(${msg.id}, 'closed')" style="padding: 0.5rem 1rem; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                        <i class="fa-solid fa-check"></i> إغلاق الرسالة
+                                    </button>
+                                    ` : ''}
+                                    <button onclick="deleteMessage(${msg.id})" style="padding: 0.5rem 1rem; background: #999; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                        <i class="fa-solid fa-trash"></i> حذف
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+                html += '</div>';
+                messagesList.innerHTML = html;
+            } catch (e) {
+                console.error('Load messages error:', e);
+                messagesList.innerHTML = '<p class="muted"><i class="fa-solid fa-circle-exclamation"></i> تعذر جلب الرسائل: ' + e.message + '</p>';
+            }
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return String(text || '').replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('تم نسخ: ' + text);
+            });
+        }
+
+        async function updateMessageStatus(messageId, status) {
+            if (!confirm('هل تريد تحديث حالة الرسالة؟')) return;
+            try {
+                const formData = new FormData();
+                formData.append('action', status === 'closed' ? 'mark_closed' : 'mark_read');
+                formData.append('message_id', messageId);
+
+                const response = await fetch('backend/admin_messages.php', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                });
+                const payload = await response.json();
+                if (payload.success) {
+                    loadMessagesList();
+                } else {
+                    alert('خطأ: ' + (payload.message || 'فشل التحديث'));
+                }
+            } catch (e) {
+                alert('خطأ في الاتصال: ' + e.message);
+            }
+        }
+
+        async function deleteMessage(messageId) {
+            if (!confirm('هل تريد حذف هذه الرسالة؟')) return;
+            try {
+                const formData = new FormData();
+                formData.append('action', 'delete');
+                formData.append('message_id', messageId);
+
+                const response = await fetch('backend/admin_messages.php', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                });
+                const payload = await response.json();
+                if (payload.success) {
+                    loadMessagesList();
+                } else {
+                    alert('خطأ: ' + (payload.message || 'فشل الحذف'));
+                }
+            } catch (e) {
+                alert('خطأ في الاتصال: ' + e.message);
+            }
+        }
+
+        // تحميل الرسائل عند فتح التبويب أو عند دخول المدير
+        document.addEventListener('DOMContentLoaded', function () {
+            var tabBtn = document.querySelector('[data-tab-target="messagesTab"]');
+            var refreshBtn = document.getElementById('refreshMessagesBtn');
+
+            if (tabBtn) {
+                tabBtn.addEventListener('click', function () {
+                    console.log('Tab clicked: messagesTab');
+                    loadMessagesList();
+                });
+            }
+
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function () {
+                    console.log('Refresh button clicked');
+                    loadMessagesList();
+                });
+            }
+
+            // محاولة تحميل الرسائل تلقائياً بعد تسجيل الدخول (كل 10 ثوانٍ)
+            setInterval(function () {
+                var messagesList = document.getElementById('messagesList');
+                if (messagesList && !messagesList.innerHTML.includes('جاري تحميل')) {
+                    // لا تحمل انتظر إذا كانت الرسائل تُحمل الآن
+                }
+            }, 10000);
+        });
+    </script>
+    <script>
+        // تصفية لائحة التلاميذ حسب الشعبة
+        document.addEventListener('DOMContentLoaded', function () {
+            var filiereFilter = document.getElementById('filiereFilter');
+            var attendanceViewStudent = document.getElementById('attendanceViewStudent');
+            if (filiereFilter && attendanceViewStudent) {
+                filiereFilter.addEventListener('change', function () {
+                    var selectedFiliere = filiereFilter.value;
+                    // جلب جميع الخيارات الأصلية (مخزنة في data-options)
+                    if (!attendanceViewStudent.dataset.options) {
+                        attendanceViewStudent.dataset.options = attendanceViewStudent.innerHTML;
+                    }
+                    var allOptions = attendanceViewStudent.dataset.options;
+                    if (selectedFiliere === '') {
+                        attendanceViewStudent.innerHTML = allOptions;
+                    } else {
+                        // تصفية الخيارات حسب الشعبة
+                        var parser = new DOMParser();
+                        var doc = parser.parseFromString('<select>' + allOptions + '</select>', 'text/html');
+                        var select = doc.querySelector('select');
+                        var filtered = Array.from(select.options).filter(function (opt) {
+                            return opt.value === '' || opt.textContent.includes(selectedFiliere);
+                        });
+                        attendanceViewStudent.innerHTML = '';
+                        filtered.forEach(function (opt) { attendanceViewStudent.appendChild(opt); });
+                    }
+                });
+            }
+
+            // عند الضغط على زر عرض الغياب، إذا كان input اليدوي غير فارغ، يتم اعتماده
+            var viewAttendanceBtn = document.getElementById('viewAttendanceBtn');
+            var attendanceStudentCodeManual = document.getElementById('attendanceStudentCodeManual');
+            if (viewAttendanceBtn && attendanceStudentCodeManual && attendanceViewStudent) {
+                viewAttendanceBtn.addEventListener('click', function (e) {
+                    var manualCode = attendanceStudentCodeManual.value.trim();
+                    if (manualCode !== '') {
+                        // نرسل الطلب برقم الطالب اليدوي
+                        // نغير قيمة select مؤقتاً
+                        attendanceViewStudent.value = '';
+                        // نضيف خاصية data-manual-code
+                        attendanceViewStudent.setAttribute('data-manual-code', manualCode);
+                    } else {
+                        attendanceViewStudent.removeAttribute('data-manual-code');
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        // إظهار input عند اختيار "أخرى" في قائمة المواد وضبط الأسماء والقيم قبل الإرسال
+        function toggleOtherSubjectInput(type) {
+            if (type === 'grades') {
+                var select = document.getElementById('subject_name_select');
+                var otherInput = document.getElementById('subject_name_other_grades');
+                if (select.value === 'أخرى') {
+                    otherInput.style.display = 'block';
+                    otherInput.required = true;
+                } else {
+                    otherInput.style.display = 'none';
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
+            } else if (type === 'attendance') {
+                var select = document.getElementById('absence_subject_select');
+                var otherInput = document.getElementById('absence_subject_other_attendance');
+                if (select.value === 'أخرى') {
+                    otherInput.style.display = 'block';
+                    otherInput.required = true;
+                } else {
+                    otherInput.style.display = 'none';
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
+            }
+        }
+
+        // ضبط الأسماء والقيم قبل الإرسال دائماً
+        document.addEventListener('DOMContentLoaded', function () {
+            var gradeForm = document.getElementById('gradeAdminForm');
+            if (gradeForm) {
+                gradeForm.addEventListener('submit', function () {
+                    var select = document.getElementById('subject_name_select');
+                    var otherInput = document.getElementById('subject_name_other_grades');
+                    if (select && otherInput) {
+                        if (select.value === 'أخرى') {
+                            otherInput.name = 'subject_name';
+                            select.name = 'subject_name_select';
+                        } else {
+                            select.name = 'subject_name';
+                            otherInput.name = 'subject_name_other_grades';
+                            otherInput.value = '';
+                        }
+                    }
+                });
+            }
+            var attendanceForm = document.getElementById('attendanceAdminForm');
+            if (attendanceForm) {
+                attendanceForm.addEventListener('submit', function () {
+                    var select = document.getElementById('absence_subject_select');
+                    var otherInput = document.getElementById('absence_subject_other_attendance');
+                    if (select && otherInput) {
+                        if (select.value === 'أخرى') {
+                            otherInput.name = 'absence_subject';
+                            select.name = 'absence_subject_select';
+                        } else {
+                            select.name = 'absence_subject';
+                            otherInput.name = 'absence_subject_other_attendance';
+                            otherInput.value = '';
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="js/admin-gallery.js"></script>
+    <script src="js/admin-courses.js"></script>
+    <script src="js/admin-notifications.js"></script>
+</body>
+
+</html>

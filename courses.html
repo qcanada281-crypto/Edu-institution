@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الشعب والبرامج التعليمية | مؤسسة Kawkab Al Ouloum</title>
+    <meta name="description" content="تعرف على الشعب والمسالك الدراسية بالثانوي الإعدادي والثانوي التأهيلي بمؤسسة Kawkab Al Ouloum">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/style.css?v=20260723">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/inner-pages.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+    
+    <style>
+        .logo img {
+            height: 85px !important;
+            width: auto;
+        }
+        .logo {
+            margin-right: -40px !important;
+        }
+        .page-title-banner {
+            position: relative;
+            background: linear-gradient(135deg, rgba(10,36,114,0.85) 0%, rgba(30,74,118,0.8) 100%), url('images/library-bg.jpg') center/cover no-repeat;
+            padding: 4.5rem 1rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2.5rem;
+        }
+        .page-title-banner h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .page-title-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .courses-filter {
+            margin-bottom: 2rem;
+        }
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-family: 'Cairo', 'Almarai', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, #1fa8cf 0%, #0f4f8a 100%);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(31, 168, 207, 0.3);
+        }
+        .courses-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 3rem;
+        }
+        .course-card {
+            background: #ffffff;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+        .course-image-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: #e2e8f0;
+        }
+        .course-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .course-card:hover .course-image-wrapper img {
+            transform: scale(1.06);
+        }
+        .course-badge {
+            position: absolute;
+            top: 0.8rem;
+            right: 0.8rem;
+            background: rgba(31, 168, 207, 0.9);
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+        }
+        .course-body {
+            padding: 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .course-body h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.6rem;
+        }
+        .course-body p {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+        .course-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+        .course-level-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f4f8a;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .course-btn {
+            background: linear-gradient(135deg, #1fa8cf 0%, #0f4f8a 100%);
+            color: white;
+            padding: 0.45rem 1rem;
+            border-radius: 0.6rem;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .course-btn:hover {
+            box-shadow: 0 4px 14px rgba(31, 168, 207, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== NAVIGATION ========== -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="index.html" class="logo">
+                    <img src="images/kawkab_alouloum.jpeg" alt="مؤسسة Kawkab Al Ouloum">
+                    <span class="logo-text">مؤسسة <span><br>Kawkab Al Ouloum</span></span>
+                </a>
+                <!-- Menu de navigation -->
+                <div class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="courses.html" class="active">الشعب والبرامج</a></li>
+                    </ul>
+
+                    <!-- User Actions -->
+                    <div class="nav-actions">
+                        <a href="inscription.html" class="btn-register">
+                            <i class="fas fa-user-plus"></i>
+                            <span>تسجيل</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Menu mobile toggle -->
+                <div class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PAGE BANNER ========== -->
+    <section class="page-title-banner">
+        <div class="container">
+            <h1>الشعب والمسالك الدراسية</h1>
+            <p>برامج تعليمية متكاملة للثانوي الإعدادي والثانوي التأهيلي وفق المناهج الوطنية المعتمدة</p>
+        </div>
+    </section>
+
+    <!-- ========== COURSES FILTER ========== -->
+    <section class="courses-filter">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="middle">الثانوي الإعدادي</button>
+                <button class="filter-btn" data-filter="science">العلوم والتكنولوجيا</button>
+                <button class="filter-btn" data-filter="arts">الآداب والعلوم الإنسانية</button>
+                <button class="filter-btn" data-filter="support">الدعم واللغات</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== COURSES GRID ========== -->
+    <main class="container">
+        <div class="courses-grid-container" id="coursesGrid">
+            <!-- Card 1 -->
+            <div class="course-card" data-category="middle">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum1.jpg" alt="الثانوي الإعدادي" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">الإعدادي</span>
+                </div>
+                <div class="course-body">
+                    <h3>سلك الثانوي الإعدادي (السنة 1، 2، 3)</h3>
+                    <p>ترسيخ المكتسبات العلمية واللغوية والتحضير الجيد للامتحان الجهوي الموحد لنيل شهادة السلك الإعدادي.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-book-reader"></i> 3 سنوات دراسية</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="course-card" data-category="science">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum2.jpg" alt="علوم تجريبية" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">التأهيلي</span>
+                </div>
+                <div class="course-body">
+                    <h3>مسلك العلوم التجريبية (علوم فيزياء / علوم حياة وأرض)</h3>
+                    <p>برنامج أكاديمي مكثف يركز على التجارب العلمية والتحليل الفيزيائي والبيولوجي للتحضير للبكالوريا.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-flask"></i> مسلك علمي</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="course-card" data-category="science">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum3.jpg" alt="علوم رياضية" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">التأهيلي</span>
+                </div>
+                <div class="course-body">
+                    <h3>مسلك العلوم الرياضية (أ / ب)</h3>
+                    <p>دراسة متعمقة للرياضيات والفيزياء والتفكير المنطقي للتأهيل للمدارس والمعاهد العليا للهندسة.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-calculator"></i> مسلك رياضي</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="course-card" data-category="arts">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum4.jpg" alt="آداب وعلوم إنسانية" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">التأهيلي</span>
+                </div>
+                <div class="course-body">
+                    <h3>مسلك الآداب والعلوم الإنسانية</h3>
+                    <p>تعميق الفكر الأدبي والفلسفي واللغوي والدراسات التاريخية والجغرافية لبناء شخصية مفكرة ومتواصلة.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-feather-pointed"></i> مسلك أدبي</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="course-card" data-category="support">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum5.jpg" alt="الدعم واللغات" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">دعم وتقوية</span>
+                </div>
+                <div class="course-body">
+                    <h3>برامج دعم اللغات (الفرنسية والإنجليزية)</h3>
+                    <p>حصص دعم مخصصة لتطوير مهارات التعبير الشفهي والكتابي والاستعداد لاختبارات اللغة الدولية.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-language"></i> لغات حية</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="course-card" data-category="support">
+                <div class="course-image-wrapper">
+                    <img src="images/kaoukab_alouloum6.jpg" alt="المعلوميات والتكنولوجيا" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                    <span class="course-badge">رقميات</span>
+                </div>
+                <div class="course-body">
+                    <h3>ورشات الإعلاميات والبرمجة المدرسية</h3>
+                    <p>تدريب التلاميذ على المهارات الرقمية والبرمجية واستخدام التقنيات الحديثة في البحث والتعلم.</p>
+                    <div class="course-footer">
+                        <span class="course-level-tag"><i class="fas fa-laptop-code"></i> ورشات عمل</span>
+                        <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="site-footer" style="background: #0f172a; color: white; padding: 2.5rem 0 1.5rem; margin-top: 3rem;">
+        <div class="container" style="text-align: center;">
+            <p style="margin-bottom: 0.8rem; font-size: 1.1rem; font-weight: 700;">مؤسسة Kawkab Al Ouloum التعليمية</p>
+            <p style="margin-bottom: 1rem; color: #94a3b8; font-size: 0.9rem;">التميز في التعليم الثانوي الإعدادي والثانوي التأهيلي</p>
+            <div style="margin-bottom: 1.5rem;">
+                <a href="index.html" style="color: #38bdf8; text-decoration: none; margin: 0 0.8rem;">الرئيسية</a> |
+                <a href="programs.html" style="color: #38bdf8; text-decoration: none; margin: 0 0.8rem;">تتبع الغياب</a> |
+                <a href="les notes.html" style="color: #38bdf8; text-decoration: none; margin: 0 0.8rem;">بيان النقط</a> |
+                <a href="teacher.html" style="color: #38bdf8; text-decoration: none; margin: 0 0.8rem;">فضاء الأساتذة</a>
+            </div>
+            <p style="color: #64748b; font-size: 0.85rem;">© 2026 جميع الحقوق محفوظة - مؤسسة Kawkab Al Ouloum التعليمية</p>
+        </div>
+    </footer>
+
+    <!-- Dynamic Courses JS Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coursesContainer = document.getElementById('coursesGrid');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+
+            let currentFilter = 'all';
+            let allCourses = [];
+
+            async function loadDynamicCourses() {
+                try {
+                    const response = await fetch('backend/courses_api.php?action=list');
+                    const data = await response.json();
+                    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                        allCourses = data.data;
+                        renderCourses();
+                    }
+                } catch (err) {
+                    console.log('Using static courses fallback');
+                }
+            }
+
+            function renderCourses() {
+                if (!coursesContainer || allCourses.length === 0) return;
+
+                coursesContainer.innerHTML = allCourses.map(course => {
+                    const show = (currentFilter === 'all' || course.category === currentFilter);
+                    const categoryBadgeLabels = {
+                        'middle': 'الإعدادي',
+                        'science': 'التأهيلي (علوم)',
+                        'arts': 'التأهيلي (آداب)',
+                        'support': 'دعم وتقوية'
+                    };
+                    return `
+                        <div class="course-card" data-category="${course.category || 'middle'}" style="display: ${show ? 'flex' : 'none'};">
+                            <div class="course-image-wrapper">
+                                <img src="${course.image_path || 'images/kaoukab_alouloum1.jpg'}" alt="${course.title}" onerror="this.src='images/kawkab_alouloum.jpeg'">
+                                <span class="course-badge">${categoryBadgeLabels[course.category] || 'شعبة'}</span>
+                            </div>
+                            <div class="course-body">
+                                <h3>${course.title}</h3>
+                                <p>${course.description || ''}</p>
+                                <div class="course-footer">
+                                    <span class="course-level-tag"><i class="fas fa-graduation-cap"></i> ${course.level_tag || 'مسلك دراسي'}</span>
+                                    <a href="inscription.html" class="course-btn">التسجيل بالمؤسسة</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    currentFilter = btn.getAttribute('data-filter');
+
+                    if (allCourses.length > 0) {
+                        renderCourses();
+                    } else {
+                        const courseCards = document.querySelectorAll('.course-card');
+                        courseCards.forEach(card => {
+                            const category = card.getAttribute('data-category');
+                            if (currentFilter === 'all' || category === currentFilter) {
+                                card.style.display = 'flex';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
+                });
+            });
+
+            const menuToggle = document.getElementById('menuToggle');
+            const navMenu = document.getElementById('navMenu');
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+
+            loadDynamicCourses();
+        });
+    </script>
+</body>
+</html>

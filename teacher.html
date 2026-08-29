@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فضاء الأساتذة | مؤسسة Kawkab Al Ouloum</title>
+    <meta name="description" content="فضاء مخصص لأساتذة مؤسسة Kawkab Al Ouloum">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css?v=202611">
+    <link rel="stylesheet" href="css/inner-pages.css?v=2026">
+    <link rel="stylesheet" href="css/admin-page.css?v=20260328">
+    <link rel="icon" type="image/x-icon" href="images/school-64 (1).png">
+    <style>
+        .teacher-page .admin-login-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .teacher-page .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .teacher-page .register-link a {
+            color: var(--admin-brand-strong);
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="inner-page admin-page teacher-page">
+
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand">
+                <img src="images/kawkab_alouloum.jpeg" alt="Kawkab Al Ouloum Logo">
+                <span>مؤسسة <strong>Kawkab Al Ouloum</strong></span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">الرئيسية</a>
+                <a href="teacher.html" class="active">فضاء الأساتذة</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="section-panel">
+            <div class="container panel-layout admin-layout" style="grid-template-columns: 1fr;">
+                <div class="panel" data-reveal>
+
+                    <!-- Login Panel -->
+                    <section id="teacherLoginPanel" class="admin-login-card">
+                        <h3><i class="fa-solid fa-chalkboard-user"></i> تسجيل دخول الأساتذة</h3>
+                        <p class="helper">المرجو إدخال بريدك الإلكتروني والكود السري.</p>
+                        
+                        <form id="teacherLoginForm" class="role-login-form" action="backend/teacher_auth.php" method="post">
+                            <div class="form-grid compact">
+                                <div class="field field-full">
+                                    <label for="teacher_email">البريد الإلكتروني *</label>
+                                    <input id="teacher_email" name="email" type="email" placeholder="teacher@gmail.com" required>
+                                </div>
+                                <div class="field field-full">
+                                    <label for="teacher_code">الكود السري *</label>
+                                    <div class="input-with-toggle">
+                                        <input id="teacher_code" name="code" type="password" required>
+                                        <button class="password-toggle" type="button" data-toggle-target="teacher_code">
+                                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 1rem;">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                دخول
+                            </button>
+                        </form>
+                        
+                        <div id="teacherLoginFeedback" class="feedback" aria-live="polite"></div>
+                        
+                        <div class="register-link">
+                            ليس لديك حساب؟ <a id="showRegisterBtn">طلب تسجيل كأستاذ جديد</a>
+                        </div>
+                    </section>
+
+                    <!-- Registration Panel -->
+                    <section id="teacherRegisterPanel" class="admin-login-card" style="display: none;">
+                        <h3><i class="fa-solid fa-user-plus"></i> طلب تسجيل كأستاذ جديد</h3>
+                        <p class="helper">سيتم مراجعة طلبك من طرف الإدارة قبل تفعيل حسابك.</p>
+                        
+                        <form id="teacherRegisterForm" class="role-login-form" action="backend/teacher_register.php" method="post">
+                            <div class="form-grid compact">
+                                <div class="field">
+                                    <label for="reg_full_name">الاسم الكامل *</label>
+                                    <input id="reg_full_name" name="full_name" type="text" required>
+                                </div>
+                                <div class="field">
+                                    <label for="reg_subject_name">المادة المُدَرَّسة *</label>
+                                    <select id="reg_subject_name" name="subject_name" required>
+                                        <option value="">اختر المادة</option>
+                                        <option value="الرياضيات">الرياضيات</option>
+                                        <option value="الفيزياء">الفيزياء</option>
+                                        <option value="العلوم">العلوم</option>
+                                        <option value="اللغة العربية">اللغة العربية</option>
+                                        <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                        <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                        <option value="التاريخ">التاريخ</option>
+                                        <option value="الجغرافيا">الجغرافيا</option>
+                                        <option value="التربية الإسلامية">التربية الإسلامية</option>
+                                        <option value="الإعلامية">الإعلامية</option>
+                                        <option value="الفلسفة">الفلسفة</option>
+                                        <option value="التربية البدنية">التربية البدنية</option>
+                                        <option value="التربية الفنية">التربية الفنية</option>
+                                        <option value="أخرى">أخرى</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label for="reg_email">البريد الإلكتروني (Gmail) *</label>
+                                    <input id="reg_email" name="email" type="email" placeholder="teacher@gmail.com" required>
+                                </div>
+                                <div class="field">
+                                    <label for="reg_phone">رقم الهاتف *</label>
+                                    <input id="reg_phone" name="phone" type="tel" placeholder="06xxxxxxxx" required>
+                                </div>
+                                <div class="field">
+                                    <label for="reg_code">اختر كود سري لحسابك *</label>
+                                    <div class="input-with-toggle">
+                                        <input id="reg_code" name="code" type="password" required minlength="6">
+                                        <button class="password-toggle" type="button" data-toggle-target="reg_code">
+                                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="reg_code_confirm">تأكيد الكود السري *</label>
+                                    <div class="input-with-toggle">
+                                        <input id="reg_code_confirm" name="code_confirm" type="password" required minlength="6">
+                                        <button class="password-toggle" type="button" data-toggle-target="reg_code_confirm">
+                                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 1rem;">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                إرسال طلب التسجيل
+                            </button>
+                        </form>
+                        
+                        <div id="teacherRegisterFeedback" class="feedback" aria-live="polite"></div>
+                        
+                        <div class="register-link">
+                            لديك حساب مسبقاً؟ <a id="showLoginBtn">تسجيل الدخول</a>
+                        </div>
+                    </section>
+
+                    <!-- Dashboard Panel -->
+                    <section id="teacherDashboard" class="admin-dashboard" style="display: none;">
+                        <!-- New Header Design -->
+                        <header class="teacher-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 0 0 30px 30px; margin-bottom: 2rem;">
+                            <div class="container">
+                                <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                                    <!-- Avatar with upload -->
+                                    <div class="teacher-avatar-section" style="position: relative;">
+                                        <div id="teacherAvatarDisplay" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-user" style="font-size: 4rem; color: #667eea;"></i>
+                                        </div>
+                                        <label for="avatarUpload" style="position: absolute; bottom: 0; right: 0; background: white; color: #667eea; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                            <i class="fa-solid fa-camera"></i>
+                                        </label>
+                                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                                    </div>
+                                    
+                                    <!-- Info -->
+                                    <div style="flex: 1;">
+                                        <h2 id="teacherHeaderName" style="margin: 0; font-size: 2rem; font-weight: 700;">اسم الأستاذ</h2>
+                                        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                                            <span id="teacherHeaderSubject" style="background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                                                <i class="fa-solid fa-book"></i> المادة
+                                            </span>
+                                            <span id="teacherHeaderSpecialty" style="background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.9rem;">
+                                                <i class="fa-solid fa-location-dot"></i> التخصص
+                                            </span>
+                                        </div>
+                                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                            <button class="btn-contact" onclick="showContactModal()" style="background: #ffc107; color: #333; border: none; padding: 0.6rem 1.2rem; border-radius: 25px; cursor: pointer; font-weight: 600;">
+                                                <i class="fa-solid fa-phone"></i> تواصل الآن
+                                            </button>
+                                            <button class="btn-whatsapp" onclick="openWhatsApp()" style="background: #25d366; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 25px; cursor: pointer; font-weight: 600;">
+                                                <i class="fa-brands fa-whatsapp"></i> واتساب
+                                            </button>
+                                            <button class="btn-search" onclick="showSearchModal()" style="background: white; color: #667eea; border: none; padding: 0.6rem 1.2rem; border-radius: 25px; cursor: pointer; font-weight: 600;">
+                                                <i class="fa-solid fa-search"></i> teachers 🧑‍🏫
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Rating -->
+                                    <div style="text-align: center;">
+                                        <div style="background: #ffc107; color: #333; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 700; font-size: 1.2rem;">
+                                            <span id="teacherRating">5.0</span> 
+                                            <i class="fa-solid fa-star"></i>
+                                            <div style="font-size: 0.8rem; font-weight: normal;">تقييم</div>
+                                        </div>
+                                        <div style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.9;">
+                                            <i class="fa-solid fa-calendar-check"></i> <span id="teacherExperience">3 سنوات خبرة</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button id="teacherLogoutBtn" style="position: absolute; top: 1rem; left: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer;">
+                                <i class="fa-solid fa-right-from-bracket"></i> خروج
+                            </button>
+                        </header>
+
+                        <nav class="admin-tabs" aria-label="الخدمات" style="background: white; padding: 1rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 0 2rem 2rem;">
+                            <button type="button" class="tab-btn is-active" data-tab-target="teacherProfileTab">
+                                <i class="fa-solid fa-id-badge"></i>
+                                معلوماتي
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherTimetableTab">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                جدول الحصص
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherAbsenceTab">
+                                <i class="fa-solid fa-calendar-xmark"></i>
+                                تسجيل الغياب
+                                <span id="teacherAbsenceTabBadge" style="display:none; background:#ef4444; color:white; padding:0.1rem 0.5rem; border-radius:10px; font-size:0.75rem; font-weight:bold; margin-right:0.3rem;">🚨 رد جديد</span>
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherHomeworkTab">
+                                <i class="fa-solid fa-book-open"></i>
+                                الواجبات
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherLessonsTab">
+                                <i class="fa-solid fa-chalkboard"></i>
+                                الدروس
+                            </button>
+                            <button type="button" class="tab-btn" data-tab-target="teacherAnnouncementsTab">
+                                <i class="fa-solid fa-bullhorn"></i>
+                                أخبار وإعلانات
+                            </button>
+                        </nav>
+
+                        <!-- Profile Tab -->
+                        <section id="teacherProfileTab" class="tab-panel is-active">
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-user-pen"></i> تحديث معلوماتي</h3>
+                                    <form id="teacherProfileForm" action="backend/teacher_profile.php" method="post">
+                                        <div class="form-grid">
+                                            <div class="field">
+                                                <label for="teacher_full_name">الاسم الكامل *</label>
+                                                <input id="teacher_full_name" name="full_name" type="text" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="teacher_phone">الهاتف</label>
+                                                <input id="teacher_phone" name="phone" type="tel" placeholder="06xxxxxxxx">
+                                            </div>
+                                            <div class="field">
+                                                <label for="teacher_subject_name">المادة</label>
+                                                <select id="teacher_subject_name" name="subject_name">
+                                                    <option value="">اختر المادة</option>
+                                                    <option value="اللغة العربية">اللغة العربية</option>
+                                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                                    <option value="الرياضيات">الرياضيات</option>
+                                                    <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                                    <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                    <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                                    <option value="التربية الفنية">التربية الفنية</option>
+                                                    <option value="التربية الموسيقية">التربية الموسيقية</option>
+                                                    <option value="التربية البدنية">التربية البدنية</option>
+                                                    <option value="الإعلاميات">الإعلاميات</option>
+                                                    <option value="التربية الإسلامية">التربية الإسلامية</option>
+                                                    <option value="التربية المدنية">التربية المدنية</option>
+                                                </select>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="teacher_bio">نبذة</label>
+                                                <textarea id="teacher_bio" name="bio" rows="3" placeholder="معلومات مختصرة عن الأستاذ..."></textarea>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                            حفظ المعلومات
+                                        </button>
+                                    </form>
+                                    <div id="teacherProfileFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-key"></i> تغيير الكود</h3>
+                                    <form id="teacherCodeForm" action="backend/teacher_profile.php" method="post">
+                                        <div class="form-grid compact">
+                                            <div class="field">
+                                                <label for="teacher_old_code">الكود الحالي *</label>
+                                                <input id="teacher_old_code" name="old_code" type="password" required autocomplete="current-password">
+                                            </div>
+                                            <div class="field">
+                                                <label for="teacher_new_code">الكود الجديد *</label>
+                                                <input id="teacher_new_code" name="new_code" type="password" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="teacher_confirm_code">تأكيد الكود *</label>
+                                                <input id="teacher_confirm_code" name="confirm_code" type="password" required>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline" type="submit">
+                                            <i class="fa-solid fa-rotate"></i>
+                                            تغيير الكود
+                                        </button>
+                                    </form>
+                                    <div id="teacherCodeFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- Timetable Tab -->
+                        <section id="teacherTimetableTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-square-plus"></i> إضافة حصة</h3>
+                                    <form id="teacherTimetableForm" action="backend/teacher_timetable.php" method="post">
+                                        <div class="form-grid compact">
+                                            <div class="field">
+                                                <label for="tt_day_of_week">اليوم *</label>
+                                                <select id="tt_day_of_week" name="day_of_week" required>
+                                                    <option value="">اختر</option>
+                                                    <option value="1">الإثنين</option>
+                                                    <option value="2">الثلاثاء</option>
+                                                    <option value="3">الأربعاء</option>
+                                                    <option value="4">الخميس</option>
+                                                    <option value="5">الجمعة</option>
+                                                    <option value="6">السبت</option>
+                                                    <option value="7">الأحد</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="tt_start_time">من *</label>
+                                                <input id="tt_start_time" name="start_time" type="time" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="tt_end_time">إلى *</label>
+                                                <input id="tt_end_time" name="end_time" type="time" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="tt_class_name">القسم *</label>
+                                                <input id="tt_class_name" name="class_name" type="text" placeholder="مثال: 3AC-2" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="tt_subject_name">المادة *</label>
+                                                <select id="tt_subject_name" name="subject_name" required>
+                                                    <option value="">اختر المادة</option>
+                                                    <option value="اللغة العربية">اللغة العربية</option>
+                                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                                    <option value="الرياضيات">الرياضيات</option>
+                                                    <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                                    <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                    <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                                    <option value="التربية الفنية">التربية الفنية</option>
+                                                    <option value="التربية الموسيقية">التربية الموسيقية</option>
+                                                    <option value="التربية البدنية">التربية البدنية</option>
+                                                    <option value="الإعلاميات">الإعلاميات</option>
+                                                    <option value="التربية الإسلامية">التربية الإسلامية</option>
+                                                    <option value="التربية المدنية">التربية المدنية</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="tt_room">القاعة</label>
+                                                <input id="tt_room" name="room" type="text" placeholder="A1 / Salle 2">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="tt_notes">ملاحظات</label>
+                                                <input id="tt_notes" name="notes" type="text" placeholder="اختياري">
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-plus"></i>
+                                            إضافة
+                                        </button>
+                                    </form>
+                                    <div id="teacherTimetableFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-table"></i> جدولي</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>اليوم</th>
+                                                    <th>الوقت</th>
+                                                    <th>القسم</th>
+                                                    <th>المادة</th>
+                                                    <th>القاعة</th>
+                                                    <th>ملاحظات</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="teacherTimetableTableBody">
+                                                <tr>
+                                                    <td colspan="7">قم بتسجيل الدخول أولا.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- Absence Tab -->
+                        <section id="teacherAbsenceTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-calendar-xmark"></i> تسجيل غيابي</h3>
+                                    <form id="teacherAbsenceForm" action="backend/teacher_absence.php" method="post">
+                                        <div class="form-grid">
+                                            <div class="field">
+                                                <label for="absence_date">تاريخ الغياب *</label>
+                                                <input id="absence_date" name="absence_date" type="date" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="absence_type">نوع الغياب *</label>
+                                                <select id="absence_type" name="absence_type" required>
+                                                    <option value="">اختر</option>
+                                                    <option value="sick">مرضي (مع وصل طبي)</option>
+                                                    <option value="family">عائلي</option>
+                                                    <option value="admin">إداري</option>
+                                                    <option value="other">آخر</option>
+                                                </select>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="absence_reason">السبب/التفاصيل *</label>
+                                                <textarea id="absence_reason" name="reason" rows="3" placeholder="اشرح سبب الغياب..." required></textarea>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="absence_document">مرفق (وصل طبي أو مستند)</label>
+                                                <input id="absence_document" name="document" type="file" accept=".pdf,.jpg,.jpeg,.png">
+                                                <small style="color: #666;">PDF أو صورة (اختياري)</small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                            إرسال إشعار الغياب
+                                        </button>
+                                    </form>
+                                    <div id="teacherAbsenceFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <div id="teacherAbsenceAlerts" style="margin-bottom: 1.2rem;"></div>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-list-check"></i> سجل غياباتي</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>التاريخ</th>
+                                                    <th>النوع</th>
+                                                    <th>السبب</th>
+                                                    <th>الحالة</th>
+                                                    <th>ملاحظات الإدارة</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="teacherAbsenceTableBody">
+                                                <tr>
+                                                    <td colspan="5">قم بتسجيل الدخول أولا.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- Homework Tab -->
+                        <section id="teacherHomeworkTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-plus"></i> إضافة واجب/نشاط</h3>
+                                    <form id="teacherHomeworkForm" action="backend/teacher_homework.php" method="post">
+                                        <div class="form-grid">
+                                            <div class="field">
+                                                <label for="hw_title">عنوان الواجب *</label>
+                                                <input id="hw_title" name="title" type="text" placeholder="مثال: واجب الرياضيات - الفصل 3" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="hw_class">القسم المستهدف *</label>
+                                                <input id="hw_class" name="class_name" type="text" placeholder="مثال: 3AC-1, 3AC-2" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="hw_subject">المادة *</label>
+                                                <select id="hw_subject" name="subject" required>
+                                                    <option value="">اختر المادة</option>
+                                                    <option value="اللغة العربية">اللغة العربية</option>
+                                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                                    <option value="الرياضيات">الرياضيات</option>
+                                                    <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                                    <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                    <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                                    <option value="التربية الفنية">التربية الفنية</option>
+                                                    <option value="التربية الموسيقية">التربية الموسيقية</option>
+                                                    <option value="التربية البدنية">التربية البدنية</option>
+                                                    <option value="الإعلاميات">الإعلاميات</option>
+                                                    <option value="التربية الإسلامية">التربية الإسلامية</option>
+                                                    <option value="التربية المدنية">التربية المدنية</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="hw_due_date">تاريخ التسليم *</label>
+                                                <input id="hw_due_date" name="due_date" type="date" required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="hw_description">وصف التمرين/الواجب *</label>
+                                                <textarea id="hw_description" name="description" rows="4" placeholder="اشرح الواجب بالتفصيل..." required></textarea>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="hw_file">ملف مرفق (PDF, Word, صورة)</label>
+                                                <input id="hw_file" name="file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                <small style="color: #666;">يمكنك إرفاق ملف التمرين</small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-upload"></i>
+                                            نشر الواجب
+                                        </button>
+                                    </form>
+                                    <div id="teacherHomeworkFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-clipboard-list"></i> الواجبات المنشورة</h3>
+                                    <div id="homeworkList" style="max-height: 400px; overflow-y: auto;">
+                                        <div style="padding: 2rem; text-align: center; color: #666;">
+                                            <i class="fa-solid fa-book-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                            <p>قم بتسجيل الدخول لعرض واجباتك</p>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- Lessons Tab -->
+                        <section id="teacherLessonsTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-plus"></i> نشر درس جديد</h3>
+                                    <form id="teacherLessonForm" action="backend/teacher_lessons.php" method="post" enctype="multipart/form-data">
+                                        <div class="form-grid">
+                                            <div class="field">
+                                                <label for="lesson_title">عنوان الدرس *</label>
+                                                <input id="lesson_title" name="title" type="text" placeholder="مثال: الدرس التمهيدي في المعادلات" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_type">نوع المحتوى *</label>
+                                                <select id="lesson_type" name="lesson_type" required>
+                                                    <option value="">اختر النوع</option>
+                                                    <option value="video">فيديو (YouTube/Vimeo/MP4)</option>
+                                                    <option value="pdf">ملف PDF</option>
+                                                    <option value="image">صورة/محتوى بصري</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_level">المستوى الدراسي</label>
+                                                <select id="lesson_level" name="level">
+                                                    <option value="">اختر المستوى (اختياري)</option>
+                                                    <option value="الأولى إبتدائي">الأولى إبتدائي</option>
+                                                    <option value="الثانية إبتدائي">الثانية إبتدائي</option>
+                                                    <option value="الثالثة إبتدائي">الثالثة إبتدائي</option>
+                                                    <option value="الرابعة إبتدائي">الرابعة إبتدائي</option>
+                                                    <option value="الخامسة إبتدائي">الخامسة إبتدائي</option>
+                                                    <option value="السادسة إبتدائي">السادسة إبتدائي</option>
+                                                    <option value="الأولى ثانوي">الأولى ثانوي</option>
+                                                    <option value="الثانية ثانوي">الثانية ثانوي</option>
+                                                    <option value="الثالثة ثانوي">الثالثة ثانوي</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_subject">المادة</label>
+                                                <select id="lesson_subject" name="subject_name">
+                                                    <option value="">اختر المادة (اختياري)</option>
+                                                    <option value="اللغة العربية">اللغة العربية</option>
+                                                    <option value="اللغة الفرنسية">اللغة الفرنسية</option>
+                                                    <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                                                    <option value="الرياضيات">الرياضيات</option>
+                                                    <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                                                    <option value="علوم الحياة والأرض">علوم الحياة والأرض</option>
+                                                    <option value="التاريخ والجغرافيا">التاريخ والجغرافيا</option>
+                                                    <option value="التربية الفنية">التربية الفنية</option>
+                                                    <option value="التربية الموسيقية">التربية الموسيقية</option>
+                                                    <option value="التربية البدنية">التربية البدنية</option>
+                                                    <option value="الإعلاميات">الإعلاميات</option>
+                                                    <option value="التربية الإسلامية">التربية الإسلامية</option>
+                                                    <option value="التربية المدنية">التربية المدنية</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_content_url">رابط المحتوى (YouTube, Vimeo, PDF)</label>
+                                                <input id="lesson_content_url" name="content_url" type="url" placeholder="https://youtube.com/... أو رابط PDF">
+                                                <small style="color: #666;">للفيديو: YouTube أو Vimeo. للـ PDF: رابط ينتهي بـ .pdf. أو اتركه فارغاً لاستخدام الملف المرفق.</small>
+                                            </div>
+                                            <div class="field">
+                                                <label for="lesson_thumbnail">رابط الصورة المصغرة (اختياري)</label>
+                                                <input id="lesson_thumbnail" name="thumbnail_url" type="url" placeholder="https://example.com/thumbnail.jpg">
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_file">ملف مرفق</label>
+                                                <input id="lesson_file" name="lesson_file" type="file" accept=".pdf,.mp4,.webm,.ogg,.jpg,.jpeg,.png,.webp,.gif">
+                                                <small style="color: #666;">PDF للدروس الورقية، MP4 للفيديو، أو صور للمحتوى البصري. الحد الأقصى 250MB.</small>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="lesson_description">وصف الدرس (اختياري)</label>
+                                                <textarea id="lesson_description" name="description" rows="3" placeholder="وصف مختصر للدرس..."></textarea>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-upload"></i>
+                                            نشر الدرس
+                                        </button>
+                                    </form>
+                                    <div id="teacherLessonFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-list"></i> دروسك المنشورة</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>العنوان</th>
+                                                    <th>النوع</th>
+                                                    <th>المستوى</th>
+                                                    <th>المادة</th>
+                                                    <th>تاريخ النشر</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="teacherLessonsTableBody">
+                                                <tr>
+                                                    <td colspan="6">قم بتسجيل الدخول لعرض دروسك.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+
+                        <!-- Announcements Tab -->
+                        <section id="teacherAnnouncementsTab" class="tab-panel" hidden>
+                            <div class="tab-grid">
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-plus"></i> نشر خبر أو إعلان</h3>
+                                    <form id="teacherAnnouncementForm" action="backend/teacher_announcements.php" method="post" enctype="multipart/form-data">
+                                        <div class="form-grid">
+                                            <div class="field field-full">
+                                                <label for="ann_title">عنوان الإعلان *</label>
+                                                <input id="ann_title" name="title" type="text" placeholder="مثال: تأجيل حصة أو إعلان عن اختبار" required>
+                                            </div>
+                                            <div class="field">
+                                                <label for="ann_type">النوع *</label>
+                                                <select id="ann_type" name="type" required>
+                                                    <option value="normal">إعلان عادي</option>
+                                                    <option value="urgent">عاجل / هام جداً</option>
+                                                </select>
+                                            </div>
+                                            <div class="field">
+                                                <label for="ann_class">القسم المستهدف *</label>
+                                                <input id="ann_class" name="class_name" type="text" placeholder="مثال: 3AC-1 (أو اترك 'all' للجميع)" value="all" required>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="ann_content">محتوى الإعلان *</label>
+                                                <textarea id="ann_content" name="content" rows="4" placeholder="اكتب تفاصيل الإعلان هنا..." required></textarea>
+                                            </div>
+                                            <div class="field field-full">
+                                                <label for="ann_file">مرفق (صورة، PDF، Word، Excel...) — اختياري</label>
+                                                <input id="ann_file" name="file" type="file" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                                                <small style="color: #666;">الحد الأقصى للحجم 10 ميغابايت</small>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa-solid fa-bullhorn"></i>
+                                            نشر الإعلان
+                                        </button>
+                                    </form>
+                                    <div id="teacherAnnouncementFeedback" class="feedback" aria-live="polite"></div>
+                                </article>
+
+                                <article class="admin-block">
+                                    <h3><i class="fa-solid fa-list"></i> إعلاناتي السابقة</h3>
+                                    <div class="table-wrap">
+                                        <table class="result-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>العنوان</th>
+                                                    <th>النوع</th>
+                                                    <th>القسم</th>
+                                                    <th>التاريخ</th>
+                                                    <th>مرفق</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="teacherAnnouncementsTableBody">
+                                                <tr>
+                                                    <td colspan="5">قم بتسجيل الدخول أولا.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </article>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container" style="text-align: center; color: rgba(255,255,255,0.7); font-size: 14px;">
+                <p>&copy; 2026 Kawkab Al Ouloum. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/teacher.js"></script>
+
+    <!-- File Preview Modal -->
+    <div id="filePreviewModal" style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.82);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    ">
+        <div style="
+            background: white;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        ">
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid #eee;
+                background: #f8f9fa;
+                border-radius: 20px 20px 0 0;
+            ">
+                <h4 id="filePreviewTitle" style="margin: 0; font-size: 1rem; color: #333;">عرض الملف</h4>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a id="filePreviewDownload" href="#" target="_blank" style="
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        padding: 0.4rem 1rem;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        font-size: 0.85rem;
+                        text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.4rem;
+                    ">‏<i class="fa-solid fa-download"></i> تحميل</a>
+                    <button onclick="closeFilePreview()" style="
+                        background: #e74c3c;
+                        color: white;
+                        border: none;
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    "><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div id="filePreviewBody" style="flex: 1; overflow: auto; padding: 1rem; display: flex; align-items: center; justify-content: center; min-height: 200px; max-height: 75vh;">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
