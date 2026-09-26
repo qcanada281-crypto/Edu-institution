@@ -13,7 +13,7 @@ declare(strict_types=1);
 header('Content-Type: text/html; charset=UTF-8');
 
 // Database connection details
-$db_host = '127.0.0.1:3308';
+$db_host = '127.0.0.1:3306';
 $db_user = 'root';
 $db_pass = '';
 $db_name = 'portfolio_db';

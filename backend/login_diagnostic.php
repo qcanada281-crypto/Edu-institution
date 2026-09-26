@@ -96,7 +96,7 @@ if (file_exists($config_path)) {
             echo '<div class="error">✗ خطأ في الاتصال بقاعدة البيانات: ' . htmlspecialchars($e->getMessage()) . '</div>';
             echo '<div class="info">';
             echo '<strong>تأكد من:</strong><br>';
-            echo '1. MySQL يعمل على البورت 3308<br>';
+            echo '1. MySQL يعمل على البورت 3306 (أو 3308)<br>';
             echo '2. قاعدة البيانات edu_institution موجودة<br>';
             echo '3. المستخدم root لديه إذن الوصول<br>';
             echo '4. لا يوجد كلمة مرور للمستخدم root<br>';

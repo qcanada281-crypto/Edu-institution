@@ -28,7 +28,7 @@ if (!headers_sent()) {
     header('X-XSS-Protection: 1; mode=block');
 }
 
-const DB_HOST = '127.0.0.1:3308';
+const DB_HOST = '127.0.0.1:3306';
 const DB_NAME = 'portfolio_db';
 const DB_USER = 'root';
 const DB_PASS = '';
@@ -39,8 +39,8 @@ const DB_CHARSET = 'utf8mb4';
 
 
 /**
- * Database Connection with Professional Error Handling
- * Uses PDO for security (prepared statements) and supports port 3308
+ * Database Connection with Professional Error Handling and Port Fallback
+ * Connects to XAMPP default port 3306 with auto-fallback to 3308 if needed
  */
 function db_connection(): PDO
 {
@@ -52,38 +52,57 @@ function db_connection(): PDO
     }
 
     // Database configuration with port support
-    $host = getenv('DB_HOST') ?: DB_HOST;  // Format: 127.0.0.1:3308
+    $host = getenv('DB_HOST') ?: DB_HOST;
     $name = getenv('DB_NAME') ?: DB_NAME;
     $user = getenv('DB_USER') ?: DB_USER;
     $pass = getenv('DB_PASS') ?: DB_PASS;
     $charset = getenv('DB_CHARSET') ?: DB_CHARSET;
 
-    // Parse host and port
-    if (strpos($host, ':') !== false) {
-        list($hostPart, $portPart) = explode(':', $host);
-        $dsn = "mysql:host={$hostPart};port={$portPart};dbname={$name};charset={$charset}";
-    } else {
-        $dsn = "mysql:host={$host};dbname={$name};charset={$charset}";
-    }
-
-    try {
-        $pdo = new PDO($dsn, $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,        // Throw exceptions on errors
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,   // Fetch associative arrays
-            PDO::ATTR_EMULATE_PREPARES => false,                // Real prepared statements (secure)
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$charset} COLLATE utf8mb4_unicode_ci"
-        ]);
-    } catch (PDOException $exception) {
-        error_log('[DB ERROR] ' . $exception->getMessage());
-        
-        // Return JSON error for API calls, or throw exception for direct use
-        if (function_exists('json_response')) {
-            json_response(false, 'تعذر الاتصال بقاعدة البيانات. الرجاء التحقق من إعدادات XAMPP.', [], 500);
+    // Helper to build DSN
+    $buildDsn = function(string $h) use ($name, $charset): string {
+        if (strpos($h, ':') !== false) {
+            list($hostPart, $portPart) = explode(':', $h);
+            return "mysql:host={$hostPart};port={$portPart};dbname={$name};charset={$charset}";
         }
-        throw new Exception('Database connection failed: ' . $exception->getMessage());
+        return "mysql:host={$h};dbname={$name};charset={$charset}";
+    };
+
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$charset} COLLATE utf8mb4_unicode_ci"
+    ];
+
+    $candidates = [$host];
+    // Add fallback ports (3306 for XAMPP, 3308 for WAMP)
+    if (strpos($host, '3308') !== false) {
+        $candidates[] = str_replace('3308', '3306', $host);
+    } elseif (strpos($host, '3306') !== false) {
+        $candidates[] = str_replace('3306', '3308', $host);
+    } else {
+        $candidates[] = '127.0.0.1:3306';
     }
 
-    return $pdo;
+    $lastException = null;
+    foreach (array_unique($candidates) as $candidateHost) {
+        try {
+            $dsn = $buildDsn($candidateHost);
+            $pdo = new PDO($dsn, $user, $pass, $options);
+            return $pdo;
+        } catch (PDOException $exception) {
+            $lastException = $exception;
+            error_log("[DB CONNECT ATTEMPT FAILED: {$candidateHost}] " . $exception->getMessage());
+        }
+    }
+
+    error_log('[DB ERROR] ' . ($lastException ? $lastException->getMessage() : 'Unknown error'));
+    
+    // Return JSON error for API calls, or throw exception for direct use
+    if (function_exists('json_response')) {
+        json_response(false, 'تعذر الاتصال بقاعدة البيانات. الرجاء التحقق من إعدادات XAMPP.', [], 500);
+    }
+    throw new Exception('Database connection failed: ' . ($lastException ? $lastException->getMessage() : 'Unknown error'));
 }
 
 /**
@@ -1494,4 +1513,68 @@ function check_rate_limit(string $actionKey, int $maxAttempts = 10, int $windowS
         return true; // fail open safely so application doesn't crash on rate limit DB error
     }
 }
+
+/**
+ * Generate cryptographically secure CSRF Token
+ */
+function generate_csrf_token(): string
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+/**
+ * Verify CSRF token safely with hash_equals
+ */
+function verify_csrf_token(?string $token): bool
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $stored = $_SESSION['csrf_token'] ?? '';
+    if ($stored === '' || empty($token)) {
+        return false;
+    }
+    return hash_equals($stored, $token);
+}
+
+/**
+ * Require valid CSRF token on state-changing POST/PUT requests
+ */
+function require_csrf_token(): void
+{
+    $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    if (!verify_csrf_token((string)$token)) {
+        json_response(false, 'رمز التوثيق (CSRF Token) غير صالح أو منتهي الصلاحية. يرجى إعادة تحديث الصفحة.', [], 403);
+    }
+}
+
+/**
+ * Strict File Upload MIME Validation using finfo_file
+ */
+function validate_uploaded_file_mime(string $tmpFilePath, array $allowedMimeTypes): bool
+{
+    if (!file_exists($tmpFilePath) || !is_readable($tmpFilePath)) {
+        return false;
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if (!$finfo) {
+        return false;
+    }
+    $detectedMime = finfo_file($finfo, $tmpFilePath);
+    finfo_close($finfo);
+
+    if (!$detectedMime) {
+        return false;
+    }
+
+    return in_array(strtolower($detectedMime), array_map('strtolower', $allowedMimeTypes), true);
+}
+
 

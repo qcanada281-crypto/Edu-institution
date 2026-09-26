@@ -116,16 +116,20 @@ if ($action === 'create') {
 
         $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $allowedExts = [];
+        $allowedMimes = [];
         if ($lessonType === 'pdf') {
             $allowedExts = ['pdf'];
+            $allowedMimes = ['application/pdf'];
         } elseif ($lessonType === 'video') {
             $allowedExts = ['mp4', 'webm', 'ogg'];
+            $allowedMimes = ['video/mp4', 'video/webm', 'video/ogg', 'application/ogg'];
         } elseif ($lessonType === 'image') {
             $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         }
 
-        if (!in_array($fileExt, $allowedExts, true)) {
-            json_response(false, "امتداد الملف غير مسموح به لنوع الدرس المختار. المسموح: " . implode(", ", $allowedExts));
+        if (!in_array($fileExt, $allowedExts, true) || !validate_uploaded_file_mime($fileTmpPath, $allowedMimes)) {
+            json_response(false, "الملف المرفوع غير مسموح به أو ينطوي على مخاطرة أمنية. المسموح: " . implode(", ", $allowedExts));
         }
 
         if ($fileSize > 250 * 1024 * 1024) {

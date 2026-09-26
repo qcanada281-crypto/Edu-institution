@@ -316,7 +316,8 @@
 }
 
 .admin-page #adminDashboard.is-visible {
-    display: grid;
+    display: grid !important;
+    opacity: 1;
 }
 
 .admin-page .dashboard-head {
@@ -495,7 +496,8 @@
 }
 
 .admin-page .tab-panel.is-active {
-    display: block;
+    display: block !important;
+    opacity: 1;
     animation: admin-fade-up 0.32s ease both;
 }
 
@@ -1268,8 +1270,13 @@
 }
 
 @keyframes fadeInModal {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .admin-modal-container {
@@ -1290,8 +1297,15 @@
 }
 
 @keyframes slideUpModal {
-    from { transform: translateY(24px) scale(0.96); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+    from {
+        transform: translateY(24px) scale(0.96);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .admin-modal-header {
@@ -1384,7 +1398,7 @@
     border-radius: 1rem;
     overflow: hidden;
     background: #e2e8f0;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .modal-preview-box img {
@@ -1524,7 +1538,7 @@
     border: 1.5px solid #cbd5e1;
     border-radius: 0.85rem;
     padding: 0.7rem 0.9rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     transition: all 0.2s ease;
     width: 100%;
     box-sizing: border-box;

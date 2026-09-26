@@ -286,36 +286,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setDashboardState(isLoggedIn) {
+        const isCurrentlyLoggedIn = dashboardPanel && !dashboardPanel.hidden && dashboardPanel.classList.contains("is-visible");
+
         if (loginPanel) {
             if (isLoggedIn) {
-                loginPanel.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+                loginPanel.style.transition = "opacity 0.3s ease, transform 0.3s ease";
                 loginPanel.style.opacity = "0";
                 loginPanel.style.transform = "translateY(-10px)";
                 setTimeout(() => {
                     loginPanel.hidden = true;
                     loginPanel.classList.remove("is-visible");
-                }, 400);
+                    loginPanel.style.display = "none";
+                }, 300);
             } else {
                 loginPanel.hidden = false;
+                loginPanel.style.display = "block";
                 loginPanel.style.opacity = "1";
                 loginPanel.style.transform = "translateY(0)";
                 loginPanel.classList.add("is-visible");
             }
         }
-        
+
         if (dashboardPanel) {
             if (isLoggedIn) {
                 dashboardPanel.hidden = false;
-                dashboardPanel.style.opacity = "0";
-                dashboardPanel.style.transform = "translateY(10px)";
-                dashboardPanel.style.transition = "opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s";
-                setTimeout(() => {
+                dashboardPanel.style.display = "grid";
+                if (!isCurrentlyLoggedIn) {
+                    dashboardPanel.style.opacity = "0";
+                    dashboardPanel.style.transform = "translateY(10px)";
+                    dashboardPanel.style.transition = "opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s";
+                    setTimeout(() => {
+                        dashboardPanel.style.opacity = "1";
+                        dashboardPanel.style.transform = "translateY(0)";
+                        dashboardPanel.classList.add("is-visible");
+                    }, 30);
+                } else {
                     dashboardPanel.style.opacity = "1";
                     dashboardPanel.style.transform = "translateY(0)";
                     dashboardPanel.classList.add("is-visible");
-                }, 50);
+                }
             } else {
                 dashboardPanel.hidden = true;
+                dashboardPanel.style.display = "none";
+                dashboardPanel.style.opacity = "0";
                 dashboardPanel.classList.remove("is-visible");
             }
         }
@@ -509,7 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const fullName = `${student.first_name || ""} ${student.last_name || ""}`.trim();
                 const guardianText = `${student.guardian_name || "-"} | ${student.guardian_phone || "-"}`;
                 const status = student.registration_status || "approved";
-                
+
                 let statusHtml = "";
                 if (status === "pending") {
                     statusHtml = '<span class="status-pill is-warning"><i class="fa-solid fa-clock"></i> قيد الانتظار</span>';
@@ -741,10 +754,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const { status, payload } = await postForm("backend/admin_lessons.php", formData);
         if (!payload.success) {
-            if (status === 403) {
-                handleUnauthorized();
-                return;
-            }
             setFeedback(lessonsTableFeedback, payload.message || "تعذر جلب الدروس.", "error");
             return;
         }
@@ -808,24 +817,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function setActiveTab(tabId) {
-        let safeTabId = String(tabId || "");
-        const requestedButton = tabButtons.find(
-            (button) =>
-                !button.hidden &&
-                String(button.getAttribute("data-tab-target") || "") === safeTabId
-        );
+        let safeTabId = String(tabId || "").trim();
 
-        if (!requestedButton) {
-            const firstVisibleButton = tabButtons.find((button) => !button.hidden);
-            safeTabId = firstVisibleButton
-                ? String(firstVisibleButton.getAttribute("data-tab-target") || "")
-                : "";
+        // Check if target panel exists
+        let targetPanel = tabPanels.find((panel) => String(panel.id || "") === safeTabId);
+
+        // If specific requested tab panel not found or inactive, fallback to role default or first panel
+        if (!targetPanel) {
+            const preferredId = activeRole === "secretary" ? "studentsTab" : "studentsListTab";
+            targetPanel = tabPanels.find((panel) => String(panel.id || "") === preferredId) || tabPanels[0];
+            safeTabId = targetPanel ? String(targetPanel.id || "") : "studentsListTab";
         }
 
         tabButtons.forEach((button) => {
-            const isMatch =
-                !button.hidden &&
-                String(button.getAttribute("data-tab-target") || "") === safeTabId;
+            const buttonTarget = String(button.getAttribute("data-tab-target") || "");
+            const isMatch = buttonTarget === safeTabId;
             button.classList.toggle("is-active", isMatch);
             button.setAttribute("aria-selected", isMatch ? "true" : "false");
         });
@@ -920,7 +926,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lessonsCache = [];
         populateStudentSelects([]);
         if (studentsTableBody) {
-            studentsTableBody.innerHTML = '<tr><td colspan="6">قم بتسجيل الدخول (المدير أو السكرتارية) أولا.</td></tr>';
+            studentsTableBody.innerHTML = '<tr><td colspan="7">قم بتسجيل الدخول (المدير أو السكرتارية) أولا.</td></tr>';
         }
         if (lessonsTableBody) {
             lessonsTableBody.innerHTML = '<tr><td colspan="6">قم بتسجيل الدخول (المدير أو السكرتارية) أولا.</td></tr>';
@@ -965,7 +971,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("action", "list");
 
         const { status, payload } = await postForm("backend/admin_students.php", formData);
-        
+
         if (!payload.success) {
             if (status === 403) {
                 handleUnauthorized();
@@ -979,7 +985,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Only show dashboard after successful session verification
         setDashboardState(true);
-        
+
         const data = payload.data || {};
         studentsCache = Array.isArray(data.students) ? data.students : [];
         const sessionUser = data.user || data.admin || null;
@@ -990,7 +996,11 @@ document.addEventListener("DOMContentLoaded", () => {
         updateStats(data.stats || {});
         populateStudentSelects(studentsCache);
         applyStudentsFiltersAndRender();
-        await loadLessonsData();
+        try {
+            await loadLessonsData();
+        } catch (errLessons) {
+            console.error("Lessons auto-load error:", errLessons);
+        }
 
         /* ------------------ Teacher Absences Management (Admin) ------------------ */
         const teacherAbsencesTableBody = document.getElementById('teacherAbsencesAdminTableBody');
@@ -1015,10 +1025,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const { status, payload } = await postForm('backend/admin_teacher_absences.php', formData);
             if (!payload.success) {
-                if (status === 403) {
-                    handleUnauthorized();
-                    return;
-                }
                 teacherAbsencesTableBody.innerHTML = `<tr><td colspan="6" class="muted">خطأ: ${escapeHtml(payload.message || 'تعذر جلب البيانات')}</td></tr>`;
                 return;
             }
@@ -1198,7 +1204,11 @@ document.addEventListener("DOMContentLoaded", () => {
             filterUrgentAbsence.addEventListener('change', renderTeacherAbsencesAdminTable);
         }
 
-        await loadTeacherAbsencesAdmin();
+        try {
+            await loadTeacherAbsencesAdmin();
+        } catch (errAbsences) {
+            console.error("Teacher absences auto-load error:", errAbsences);
+        }
 
         /* ------------------ Teachers management (admin) ------------------ */
         const teachersPendingStatus = document.getElementById('teachersPendingStatus');
@@ -1231,13 +1241,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const { status, payload } = await postForm('backend/admin_teachers.php', formData);
             if (!payload.success) {
-                if (status === 403) {
-                    handleUnauthorized();
-                    return;
-                }
                 const err = escapeHtml(payload.message || 'تعذر جلب البيانات');
-                if (teachersPendingStatus) teachersPendingStatus.textContent = 'خطأ: ' + err;
-                teachersRegisteredList.innerHTML = `<p class="teacher-empty muted">خطأ: ${err}</p>`;
+                if (teachersPendingStatus) teachersPendingStatus.textContent = 'ملاحظة: ' + err;
+                teachersRegisteredList.innerHTML = `<p class="teacher-empty muted">ملاحظة: ${err}</p>`;
                 return;
             }
 
@@ -1338,6 +1344,14 @@ document.addEventListener("DOMContentLoaded", () => {
             teachersTabBtn.addEventListener('click', loadTeachersList);
         }
 
+        if (activeRole === "director") {
+            try {
+                await loadTeachersList();
+            } catch (errTeachers) {
+                console.error("Teachers list auto-load error:", errTeachers);
+            }
+        }
+
         if (showSuccessMessage) {
             setFeedback(studentTableFeedback, "تم تحديث البيانات بنجاح.", "success");
         }
@@ -1379,16 +1393,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-          activeRole = normalizedUserRole;
+            activeRole = normalizedUserRole;
             setFeedback(feedbackElement, `تم تسجيل الدخول بنجاح كـ ${getRoleLabel(activeRole)}.`, "success");
-              
+
             // Disable buttons to avoid re-validation errors during transition
             const btns = form.querySelectorAll('button[type="submit"]');
             btns.forEach(b => b.disabled = true);
-            
+
+            // Apply role access rules first so scoped tabs/elements are enabled
+            applyRoleAccess(activeRole);
+
             // Show dashboard immediately before loading data
             setDashboardState(true);
-            
+
             form.reset();
             if (loginRoleInput) {
                 loginRoleInput.value = activeRole;
@@ -1597,7 +1614,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const action = target.getAttribute("data-action");
         const isRequest = target.getAttribute("data-is-request") || "no";
-        const selectedStudent = studentsCache.find((student) => 
+        const selectedStudent = studentsCache.find((student) =>
             Number(student.id) === studentId && (student.is_request || "no") === isRequest
         );
         if (!selectedStudent) {
@@ -2108,7 +2125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (gradeForm) {
-        gradeForm.addEventListener("submit", function(event) {
+        gradeForm.addEventListener("submit", function (event) {
             // معالجة المادة: إذا اختار "أخرى"، نأخذ النص من input، وإلا من select
             var select = document.getElementById('subject_name_select');
             var otherInput = document.getElementById('subject_name_other_grades');
@@ -2130,7 +2147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (attendanceForm) {
-        attendanceForm.addEventListener("submit", function(event) {
+        attendanceForm.addEventListener("submit", function (event) {
             var select = document.getElementById('absence_subject_select');
             var otherInput = document.getElementById('absence_subject_other_attendance');
             if (select && otherInput) {
@@ -2227,11 +2244,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function populatePromoLevelFilter() {
         if (!promoFilterLevel) return;
         const levels = new Set();
-        promotionPreviewData.forEach(function(item) {
+        promotionPreviewData.forEach(function (item) {
             if (item.current_level) levels.add(item.current_level);
         });
         promoFilterLevel.innerHTML = '<option value="">كل المستويات</option>' +
-            Array.from(levels).sort().map(function(l) {
+            Array.from(levels).sort().map(function (l) {
                 return '<option value="' + escapeHtml(l) + '">' + escapeHtml(l) + '</option>';
             }).join('');
     }
@@ -2244,10 +2261,10 @@ document.addEventListener("DOMContentLoaded", () => {
         var filterLevel = promoFilterLevel ? promoFilterLevel.value : '';
 
         if (filterResult !== '') {
-            filtered = filtered.filter(function(item) { return item.resultat === filterResult; });
+            filtered = filtered.filter(function (item) { return item.resultat === filterResult; });
         }
         if (filterLevel !== '') {
-            filtered = filtered.filter(function(item) { return item.current_level === filterLevel; });
+            filtered = filtered.filter(function (item) { return item.current_level === filterLevel; });
         }
 
         if (filtered.length === 0) {
@@ -2255,7 +2272,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        promotionPreviewBody.innerHTML = filtered.map(function(item) {
+        promotionPreviewBody.innerHTML = filtered.map(function (item) {
             var resultatLabel, resultatClass;
             if (item.resultat === 'admis') {
                 resultatLabel = '✅ ناجح';
@@ -2291,12 +2308,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         var html = '';
-        Object.keys(repartition).sort().forEach(function(level) {
+        Object.keys(repartition).sort().forEach(function (level) {
             var classes = repartition[level];
             html += '<div class="repartition-level-block">';
             html += '<h4><i class="fa-solid fa-layer-group"></i> ' + escapeHtml(level) + ' (' + classes.length + ' أقسام)</h4>';
             html += '<div class="repartition-classes-grid">';
-            classes.forEach(function(cls) {
+            classes.forEach(function (cls) {
                 html += '<div class="repartition-class-card">';
                 html += '<div class="class-card-header">' + escapeHtml(cls.nom_classe) + '</div>';
                 html += '<div class="class-card-body">';
@@ -2317,7 +2334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        promotionHistoryBody.innerHTML = promotions.map(function(p, idx) {
+        promotionHistoryBody.innerHTML = promotions.map(function (p, idx) {
             return '<tr>' +
                 '<td>' + (idx + 1) + '</td>' +
                 '<td>' + escapeHtml(p.annee_scolaire_from || '') + '</td>' +
@@ -2359,7 +2376,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             var stats = payload.data.stats_par_niveau || {};
             var totalAdmis = 0, totalRedoublants = 0;
-            Object.values(stats).forEach(function(s) {
+            Object.values(stats).forEach(function (s) {
                 totalAdmis += s.admis || 0;
                 totalRedoublants += s.redoublants || 0;
             });

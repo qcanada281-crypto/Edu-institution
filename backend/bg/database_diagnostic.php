@@ -12,7 +12,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
 // Database configuration
 $db_config = [
-    'host'    => '127.0.0.1:3308',
+    'host'    => '127.0.0.1:3306',
     'name'    => 'portfolio_db',
     'user'    => 'root',
     'pass'    => '',
