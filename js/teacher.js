@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (identityEl) {
                     identityEl.innerHTML = `<p class="identity-line"><i class="fa-solid fa-chalkboard-user"></i> ${user.full_name}</p>`;
                 }
-                loadTeacherData();
+                void loadTeacherData();
             } catch (error) {
                 console.error("DEBUG: Error during login:", error);
                 showFeedback(loginFeedback, error.message, "error");
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showFeedback(feedback, (payload && payload.message) ? payload.message : "تعذر إضافة الحصة.", ok ? "success" : "error");
                 if (ok) {
                     timetableForm.reset();
-                    loadTeacherTimetable();
+                    void loadTeacherTimetable();
                 }
             } catch (error) {
                 showFeedback(feedback, error.message, "error");
@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("teacher_subject_name").value = t.subject_name || "";
                 document.getElementById("teacher_bio").value = t.bio || "";
             }
-            loadTeacherTimetable();
+            void loadTeacherTimetable();
         } catch (e) {
             console.error("Failed to load teacher data", e);
         }
@@ -354,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     const { payload } = await postForm("backend/teacher_timetable.php", formData);
                     if (payload && payload.success) {
-                        loadTeacherTimetable();
+                        void loadTeacherTimetable();
                     } else {
                         alert((payload && payload.message) ? payload.message : "تعذر حذف الحصة.");
                     }
@@ -409,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showFeedback(feedback, (payload && payload.message) ? payload.message : "تعذر إرسال الإشعار.", ok ? "success" : "error");
                 if (ok) {
                     absenceForm.reset();
-                    loadTeacherAbsences();
+                    void loadTeacherAbsences();
                 }
             } catch (error) {
                 showFeedback(feedback, error.message, "error");
@@ -516,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showFeedback(feedback, (payload && payload.message) ? payload.message : "تعذر نشر الواجب.", ok ? "success" : "error");
                 if (ok) {
                     homeworkForm.reset();
-                    loadTeacherHomework();
+                    void loadTeacherHomework();
                 }
             } catch (error) {
                 showFeedback(feedback, error.message, "error");
@@ -615,15 +615,15 @@ document.addEventListener("DOMContentLoaded", () => {
      };
  
      // Override loadTeacherData to include header
-     const originalLoadTeacherData = loadTeacherData;
-     loadTeacherData = async function() {
-         await originalLoadTeacherData();
-         await loadTeacherHeader();
-         await loadTeacherAbsences();
-         await loadTeacherHomework();
-         await loadTeacherLessons();
-         await loadTeacherAnnouncements();
-     };
+    const originalLoadTeacherData = loadTeacherData;
+    loadTeacherData = async function() {
+        await originalLoadTeacherData();
+        await loadTeacherHeader();
+        await loadTeacherAbsences();
+        await loadTeacherHomework();
+        await loadTeacherLessons();
+        await loadTeacherAnnouncements();
+    };
      
      // Lessons functionality
      const lessonForm = document.getElementById("teacherLessonForm");
@@ -640,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
                  showFeedback(feedback, (payload && payload.message) ? payload.message : "تعذر نشر الدرس.", ok ? "success" : "error");
                  if (ok) {
                      lessonForm.reset();
-                     loadTeacherLessons();
+                     void loadTeacherLessons();
                  }
              } catch (error) {
                  showFeedback(feedback, error.message, "error");
@@ -695,7 +695,7 @@ document.addEventListener("DOMContentLoaded", () => {
                      try {
                          const { payload } = await postForm("backend/teacher_lessons.php", deleteData);
                          if (payload && payload.success) {
-                             loadTeacherLessons();
+                             void loadTeacherLessons();
                          } else {
                              alert((payload && payload.message) ? payload.message : "تعذر حذف الدرس.");
                          }
@@ -724,7 +724,7 @@ document.addEventListener("DOMContentLoaded", () => {
                  showFeedback(feedback, (payload && payload.message) ? payload.message : "تعذر نشر الإعلان.", ok ? "success" : "error");
                  if (ok) {
                      announcementForm.reset();
-                     loadTeacherAnnouncements();
+                     void loadTeacherAnnouncements();
                  }
              } catch (error) {
                  showFeedback(feedback, error.message, "error");
@@ -774,7 +774,7 @@ document.addEventListener("DOMContentLoaded", () => {
                      try {
                          const { payload } = await postForm("backend/teacher_announcements.php", deleteData);
                          if (payload && payload.success) {
-                             loadTeacherAnnouncements();
+                             void loadTeacherAnnouncements();
                          } else {
                              alert((payload && payload.message) ? payload.message : "تعذر حذف الإعلان.");
                          }

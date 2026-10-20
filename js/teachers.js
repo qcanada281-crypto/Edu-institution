@@ -4,7 +4,7 @@ let currentTeacherId = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    loadTeachers();
+    void loadTeachers();
     setupMobileMenu();
 });
 

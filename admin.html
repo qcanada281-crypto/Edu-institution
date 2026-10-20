@@ -408,7 +408,7 @@
                                             <p id="gradeStudentHint" class="muted">أدخل كود الطالب كما هو مسجل.</p>
                                         </div>
                                         <div class="field">
-                                            <label for="subject_name">المادة *</label>
+                                            <label for="subject_name_select">المادة *</label>
                                             <select id="subject_name_select" name="subject_name_select" required
                                                 onchange="toggleOtherSubjectInput('grades')">
                                                 <option value="">اختر المادة</option>
@@ -426,6 +426,7 @@
                                                 <option value="علوم اقتصادية">علوم اقتصادية</option>
                                                 <option value="أخرى">أخرى</option>
                                             </select>
+                                            <label for="subject_name_other_grades" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">اسم المادة الأخرى</label>
                                             <input id="subject_name_other_grades" name="subject_name" type="text"
                                                 aria-label="اسم المادة الأخرى"
                                                 placeholder="اكتب اسم المادة"
@@ -494,7 +495,7 @@
                                             </select>
                                         </div>
                                         <div class="field">
-                                            <label for="absence_subject">المادة *</label>
+                                            <label for="absence_subject_select">المادة *</label>
                                             <select id="absence_subject_select" name="absence_subject_select" required
                                                 onchange="toggleOtherSubjectInput('attendance')">
                                                 <option value="">اختر المادة</option>
@@ -512,6 +513,7 @@
                                                 <option value="علوم اقتصادية">علوم اقتصادية</option>
                                                 <option value="أخرى">أخرى</option>
                                             </select>
+                                            <label for="absence_subject_other_attendance" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">اسم مادة الغياب الأخرى</label>
                                             <input id="absence_subject_other_attendance" name="absence_subject"
                                                 aria-label="اسم مادة الغياب الأخرى"
                                                 type="text" placeholder="اكتب اسم المادة"

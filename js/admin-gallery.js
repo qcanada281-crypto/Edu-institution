@@ -47,13 +47,13 @@ class AdminGalleryManager {
     
     init() {
         if (this.uploadForm) {
-            this.uploadForm.addEventListener('submit', (e) => this.handleUpload(e));
+            this.uploadForm.addEventListener('submit', (e) => void this.handleUpload(e));
         }
         if (this.loadAllBtn) {
-            this.loadAllBtn.addEventListener('click', () => this.loadAllPhotos());
+            this.loadAllBtn.addEventListener('click', () => void this.loadAllPhotos());
         }
         if (this.editForm) {
-            this.editForm.addEventListener('submit', (e) => this.handleEditSubmit(e));
+            this.editForm.addEventListener('submit', (e) => void this.handleEditSubmit(e));
         }
         if (this.closeModalBtn) {
             this.closeModalBtn.addEventListener('click', () => this.closeEditModal());
@@ -131,7 +131,7 @@ class AdminGalleryManager {
             
             // Reload photos if already loaded
             if (this.photosContainer.children.length > 0 && !this.photosContainer.querySelector('.muted')) {
-                this.loadAllPhotos();
+                void this.loadAllPhotos();
             }
             
         } catch (error) {
@@ -257,9 +257,9 @@ class AdminGalleryManager {
                 const action = button.getAttribute('data-gallery-action');
 
                 if (action === 'edit') {
-                    this.editPhoto(photoId);
+                    void this.editPhoto(photoId);
                 } else if (action === 'delete') {
-                    this.deletePhoto(photoId, photoTitle);
+                    void this.deletePhoto(photoId, photoTitle);
                 }
             });
         }
@@ -355,7 +355,7 @@ class AdminGalleryManager {
 
             setTimeout(() => {
                 this.closeEditModal();
-                this.loadAllPhotos();
+                void this.loadAllPhotos();
             }, 700);
 
         } catch (error) {
@@ -403,7 +403,7 @@ class AdminGalleryManager {
             }
             
             this.showSuccessFeedback(this.galleryFeedback, '✓ تم حذف الصورة بنجاح');
-            this.loadAllPhotos();
+            void this.loadAllPhotos();
             
         } catch (error) {
             console.error('Delete error:', error);

@@ -385,7 +385,7 @@ function renderTranscript(payload) {
     const rows = grades
         .map(
             (grade) => {
-                const avg = parseFloat(grade.average) || 0;
+                const avg = Number.parseFloat(grade.average) || 0;
                 let avgClass = '';
                 if (avg >= 10) avgClass = 'score-good';
                 else if (avg >= 5) avgClass = 'score-warning';
@@ -704,6 +704,23 @@ if (contactForm) {
 }
 
 // ========== GALLERY PREVIEW IN INDEX ==========
+const ALLOWED_GALLERY_CATEGORIES = new Set(['trips', 'events', 'ceremonies', 'activities', 'other']);
+
+function sanitizeImageUrl(raw) {
+    if (typeof raw !== 'string') return 'images/kawkab_alouloum.jpeg';
+    const clean = raw.trim();
+    if (!clean || /^\s*javascript:/i.test(clean)) return 'images/kawkab_alouloum.jpeg';
+    try {
+        const u = new URL(clean, window.location.href);
+        if ((u.protocol === 'http:' || u.protocol === 'https:') && !u.pathname.includes('<') && !u.pathname.includes('>')) {
+            return u.pathname + u.search;
+        }
+    } catch {
+        return 'images/kawkab_alouloum.jpeg';
+    }
+    return 'images/kawkab_alouloum.jpeg';
+}
+
 class GalleryPreview {
     constructor() {
         this.galleryGrid = document.getElementById('galleryGridIndex');
@@ -742,15 +759,15 @@ class GalleryPreview {
         this.galleryGrid.textContent = '';
         
         photosToShow.forEach(photo => {
+            const rawCat = String(photo.category || '').toLowerCase().trim();
+            const safeCategory = ALLOWED_GALLERY_CATEGORIES.has(rawCat) ? rawCat : 'other';
+
             const item = document.createElement('div');
             item.className = 'gallery-item';
-            item.dataset.category = encodeURIComponent(photo.category || '');
+            item.dataset.category = safeCategory;
             
             const img = document.createElement('img');
-            const rawPath = typeof photo.image_path === 'string' ? photo.image_path.trim() : '';
-            if (rawPath && !/^\s*javascript:/i.test(rawPath)) {
-                img.src = encodeURI(rawPath);
-            }
+            img.src = sanitizeImageUrl(photo.image_path);
             img.alt = photo.title || 'صورة من المعرض';
             img.loading = 'lazy';
             
@@ -773,8 +790,8 @@ class GalleryPreview {
             item.appendChild(overlay);
             
             item.addEventListener('click', () => {
-                const category = encodeURIComponent(item.dataset.category || '');
-                window.location.href = `gallery.html?category=${category}`;
+                const cat = ALLOWED_GALLERY_CATEGORIES.has(item.dataset.category) ? item.dataset.category : 'other';
+                window.location.assign(`gallery.html?category=${encodeURIComponent(cat)}`);
             });
             
             this.galleryGrid.appendChild(item);

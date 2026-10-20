@@ -1186,16 +1186,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const absenceId = btn.getAttribute('data-review-absence-id');
                 const decision = btn.getAttribute('data-review-decision');
                 if (absenceId && decision) {
-                    processReviewTeacherAbsence(absenceId, decision);
+                    void processReviewTeacherAbsence(absenceId, decision);
                 }
             });
         }
 
         if (refreshTeacherAbsencesBtn) {
-            refreshTeacherAbsencesBtn.addEventListener('click', loadTeacherAbsencesAdmin);
+            refreshTeacherAbsencesBtn.addEventListener('click', () => void loadTeacherAbsencesAdmin());
         }
         if (teacherAbsenceTabBtn) {
-            teacherAbsenceTabBtn.addEventListener('click', loadTeacherAbsencesAdmin);
+            teacherAbsenceTabBtn.addEventListener('click', () => void loadTeacherAbsencesAdmin());
         }
         if (filterStatusAbsence) {
             filterStatusAbsence.addEventListener('change', renderTeacherAbsencesAdminTable);
@@ -1324,11 +1324,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const action = btn.getAttribute('data-action');
             const reqId = btn.getAttribute('data-request-id');
             if (action === 'approve-teacher') {
-                approveTeacher(reqId);
+                void approveTeacher(reqId);
             } else if (action === 'reject-teacher') {
                 const reason = prompt('أدخل سبب الرفض (اختياري)');
                 if (reason !== null) {
-                    rejectTeacher(reqId, reason);
+                    void rejectTeacher(reqId, reason);
                 }
             }
         }
@@ -1338,10 +1338,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (refreshTeachersBtn) {
-            refreshTeachersBtn.addEventListener('click', loadTeachersList);
+            refreshTeachersBtn.addEventListener('click', () => void loadTeachersList());
         }
         if (teachersTabBtn) {
-            teachersTabBtn.addEventListener('click', loadTeachersList);
+            teachersTabBtn.addEventListener('click', () => void loadTeachersList());
         }
 
         if (activeRole === "director") {
@@ -2142,7 +2142,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     otherInput.value = '';
                 }
             }
-            onGradeSubmit(event);
+            void onGradeSubmit(event);
         });
     }
 
@@ -2160,12 +2160,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     otherInput.value = '';
                 }
             }
-            onAttendanceSubmit(event);
+            void onAttendanceSubmit(event);
         });
     }
 
     if (lessonForm) {
-        lessonForm.addEventListener("submit", onLessonSubmit);
+        lessonForm.addEventListener("submit", (e) => void onLessonSubmit(e));
     }
 
     if (lessonResetBtn) {
@@ -2176,24 +2176,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (lessonsTableBody) {
-        lessonsTableBody.addEventListener("click", onLessonTableAction);
+        lessonsTableBody.addEventListener("click", (e) => void onLessonTableAction(e));
     }
 
     if (viewGradesBtn) {
-        viewGradesBtn.addEventListener("click", onViewGrades);
+        viewGradesBtn.addEventListener("click", () => void onViewGrades());
     }
 
     if (viewAttendanceBtn) {
-        viewAttendanceBtn.addEventListener("click", onViewAttendance);
+        viewAttendanceBtn.addEventListener("click", () => void onViewAttendance());
     }
 
     initTabs();
     initPasswordToggles();
     syncLoginRoleInputs();
-    checkDatabaseConnection();
+    void checkDatabaseConnection();
 
     // Check for existing admin session and restore dashboard if logged in
-    checkAndRestoreSession();
+    void checkAndRestoreSession();
 
     // ============================================================
     // PROMOTION ANNUELLE - GESTION DU TAB
@@ -2468,9 +2468,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    if (promotionPreviewBtn) promotionPreviewBtn.addEventListener('click', promotionPreview);
-    if (promotionExecuteBtn) promotionExecuteBtn.addEventListener('click', promotionExecute);
-    if (promotionHistoryBtn) promotionHistoryBtn.addEventListener('click', promotionHistory);
+    if (promotionPreviewBtn) promotionPreviewBtn.addEventListener('click', () => void promotionPreview());
+    if (promotionExecuteBtn) promotionExecuteBtn.addEventListener('click', () => void promotionExecute());
+    if (promotionHistoryBtn) promotionHistoryBtn.addEventListener('click', () => void promotionHistory());
 
     if (promoFilterResult) promoFilterResult.addEventListener('change', renderPromotionPreview);
     if (promoFilterLevel) promoFilterLevel.addEventListener('change', renderPromotionPreview);

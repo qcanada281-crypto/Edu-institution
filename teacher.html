@@ -170,10 +170,11 @@
                                         <div id="teacherAvatarDisplay" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid white; overflow: hidden; background: white; display: flex; align-items: center; justify-content: center;">
                                             <i class="fa-solid fa-user" style="font-size: 4rem; color: #667eea;"></i>
                                         </div>
-                                        <label for="avatarUpload" style="position: absolute; bottom: 0; right: 0; background: white; color: #667eea; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-                                            <i class="fa-solid fa-camera"></i>
+                                        <label for="avatarUpload" title="تغيير الصورة الشخصية" aria-label="تغيير الصورة الشخصية" style="position: absolute; bottom: 0; right: 0; background: white; color: #667eea; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                            <i class="fa-solid fa-camera" aria-hidden="true"></i>
+                                            <span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">تغيير الصورة الشخصية</span>
                                         </label>
-                                        <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                                        <input type="file" id="avatarUpload" name="avatarUpload" aria-label="تغيير الصورة الشخصية" accept="image/*" style="display: none;">
                                     </div>
                                     
                                     <!-- Info -->

@@ -24,7 +24,7 @@ class AdminCoursesManager {
             this.addForm.addEventListener('submit', (e) => this.handleAdd(e));
         }
         if (this.loadAllBtn) {
-            this.loadAllBtn.addEventListener('click', () => this.loadCourses());
+            this.loadAllBtn.addEventListener('click', () => { void this.loadCourses(); });
         }
         if (this.editForm) {
             this.editForm.addEventListener('submit', (e) => this.handleEdit(e));
@@ -39,7 +39,7 @@ class AdminCoursesManager {
         // Listen for tab activation
         document.querySelectorAll('.tab-btn[data-tab-target="coursesTab"]').forEach(btn => {
             btn.addEventListener('click', () => {
-                this.loadCourses();
+                void this.loadCourses();
             });
         });
     }
@@ -126,7 +126,7 @@ class AdminCoursesManager {
             if (data.success) {
                 this.showFeedback(this.addFeedback, 'تمت إضافة الشعبة/البرنامج بنجاح!');
                 this.addForm.reset();
-                this.loadCourses();
+                void this.loadCourses();
             } else {
                 this.showFeedback(this.addFeedback, data.error || 'فشلت الإضافة', true);
             }
@@ -175,7 +175,7 @@ class AdminCoursesManager {
                 this.showFeedback(this.editFeedback, 'تم حفظ التعديلات بنجاح!');
                 setTimeout(() => {
                     this.closeEditPanel();
-                    this.loadCourses();
+                    void this.loadCourses();
                 }, 800);
             } else {
                 this.showFeedback(this.editFeedback, data.error || 'فشل الحفظ', true);
@@ -200,7 +200,7 @@ class AdminCoursesManager {
             const data = await res.json();
 
             if (data.success) {
-                this.loadCourses();
+                void this.loadCourses();
             } else {
                 alert(data.error || 'فشل الحذف');
             }
