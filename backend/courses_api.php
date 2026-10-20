@@ -124,7 +124,7 @@ try {
                     mkdir($uploadDir, 0755, true);
                 }
 
-                $filename = 'course_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                $filename = 'course_' . time() . '_' . random_int(1000, 9999) . '.' . $ext;
                 $targetFile = $uploadDir . $filename;
 
                 if (move_uploaded_file($file['tmp_name'], $targetFile)) {
@@ -179,7 +179,7 @@ try {
                 }
 
                 $uploadDir = __DIR__ . '/../images/';
-                $filename = 'course_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+                $filename = 'course_' . time() . '_' . random_int(1000, 9999) . '.' . $ext;
                 $targetFile = $uploadDir . $filename;
 
                 if (move_uploaded_file($file['tmp_name'], $targetFile)) {

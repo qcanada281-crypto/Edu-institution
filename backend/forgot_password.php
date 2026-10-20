@@ -138,8 +138,11 @@ try {
     // Send email (disabled in demo environment if mail server not configured)
     @mail($email, $subject, $message, implode("\r\n", $headers));
 
-    // Log the request
-    error_log('Password reset requested for email: ' . $email . ' (User ID: ' . $userId . ', Type: ' . ($isAdmin ? 'admin' : 'teacher') . ')');
+    // Log the request (safely sanitized against CRLF log injection)
+    $safeEmail = preg_replace('/[\r\n\t]+/', '', (string)$email);
+    $safeUserId = (int)$userId;
+    $safeType = $isAdmin ? 'admin' : 'teacher';
+    error_log('Password reset requested for email: ' . $safeEmail . ' (User ID: ' . $safeUserId . ', Type: ' . $safeType . ')');
 
     json_response(true, 'Si ladresse email existe, un lien de réinitialisation a été envoyé.');
 

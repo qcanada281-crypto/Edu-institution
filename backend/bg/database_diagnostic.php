@@ -12,10 +12,10 @@ header('Content-Type: text/html; charset=UTF-8');
 
 // Database configuration
 $db_config = [
-    'host'    => '127.0.0.1:3306',
-    'name'    => 'portfolio_db',
-    'user'    => 'root',
-    'pass'    => '',
+    'host'    => getenv('DB_HOST') ?: '127.0.0.1:3306',
+    'name'    => preg_replace('/[^a-zA-Z0-9_]/', '', (string)(getenv('DB_NAME') ?: 'portfolio_db')),
+    'user'    => getenv('DB_USER') ?: 'root',
+    'pass'    => getenv('DB_PASS') !== false ? getenv('DB_PASS') : (defined('DB_PASS') ? DB_PASS : ''),
     'charset' => 'utf8mb4'
 ];
 
@@ -106,14 +106,16 @@ try {
 echo '</div><div class="section"><h2>✓ الخطوة 2: التحقق من قاعدة البيانات</h2>';
 
 try {
-    $pdo->exec("USE `{$db_config['name']}`");
+    $safe_dbname = str_replace("`", "``", $db_config['name']);
+    $pdo->exec("USE `" . $safe_dbname . "`");
     echo '<div class="success">✓ <strong>قاعدة البيانات موجودة:</strong> ' . htmlspecialchars($db_config['name']) . '</div>';
     $successes[] = 'Database Selection';
 } catch (PDOException $e) {
     echo '<div class="warning">⚠ قاعدة البيانات غير موجودة. سيتم إنشاؤها...</div>';
     try {
-        $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$db_config['name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        $pdo->exec("USE `{$db_config['name']}`");
+        $safe_dbname = str_replace("`", "``", $db_config['name']);
+        $pdo->exec("CREATE DATABASE IF NOT EXISTS `" . $safe_dbname . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        $pdo->exec("USE `" . $safe_dbname . "`");
         echo '<div class="success">✓ تم إنشاء قاعدة البيانات بنجاح</div>';
     } catch (PDOException $e2) {
         echo '<div class="issue">✗ خطأ في إنشاء قاعدة البيانات: ' . htmlspecialchars($e2->getMessage()) . '</div>';

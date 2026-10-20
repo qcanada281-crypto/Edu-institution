@@ -737,25 +737,42 @@ class GalleryPreview {
         
         // عرض أول 6 صور فقط في الصفحة الرئيسية
         const photosToShow = this.photos.slice(0, 6);
+        this.galleryGrid.textContent = '';
         
-        this.galleryGrid.innerHTML = photosToShow.map(photo => `
-            <div class="gallery-item" data-category="${photo.category}">
-                <img src="${photo.image_path}" alt="${photo.title}" loading="lazy">
-                <div class="gallery-item-overlay">
-                    <div class="gallery-item-overlay-content">
-                        <h3>${photo.title}</h3>
-                        <p>${photo.description || 'صورة من المعرض'}</p>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-        
-        // إضافة حدث النقر للانتقال إلى المعرض الكامل
-        document.querySelectorAll('#galleryGridIndex .gallery-item').forEach(item => {
+        photosToShow.forEach(photo => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.dataset.category = photo.category || '';
+            
+            const img = document.createElement('img');
+            img.src = photo.image_path || '';
+            img.alt = photo.title || 'صورة من المعرض';
+            img.loading = 'lazy';
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'gallery-item-overlay';
+            
+            const content = document.createElement('div');
+            content.className = 'gallery-item-overlay-content';
+            
+            const h3 = document.createElement('h3');
+            h3.textContent = photo.title || '';
+            
+            const p = document.createElement('p');
+            p.textContent = photo.description || 'صورة من المعرض';
+            
+            content.appendChild(h3);
+            content.appendChild(p);
+            overlay.appendChild(content);
+            item.appendChild(img);
+            item.appendChild(overlay);
+            
             item.addEventListener('click', () => {
-                const category = item.dataset.category;
+                const category = encodeURIComponent(item.dataset.category || '');
                 window.location.href = `gallery.html?category=${category}`;
             });
+            
+            this.galleryGrid.appendChild(item);
         });
     }
     

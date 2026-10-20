@@ -139,10 +139,19 @@ document.addEventListener("DOMContentLoaded", () => {
         renderLessons(filtered);
     }
 
+    function generateSecureLessonId() {
+        if (typeof window !== 'undefined' && window.crypto && window.crypto.getRandomValues) {
+            const arr = new Uint32Array(1);
+            window.crypto.getRandomValues(arr);
+            return arr[0].toString(36);
+        }
+        return Date.now().toString(36);
+    }
+
     function normalizeLesson(rawLesson) {
         const lesson = rawLesson || {};
         return {
-            id: lesson.id || `manual-${Math.random().toString(36).slice(2, 9)}`,
+            id: lesson.id || `manual-${generateSecureLessonId()}`,
             title: String(lesson.title || "").trim(),
             description: String(lesson.description || "").trim(),
             lesson_type: String(lesson.lesson_type || "").trim().toLowerCase(),

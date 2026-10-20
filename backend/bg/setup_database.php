@@ -13,10 +13,10 @@ declare(strict_types=1);
 header('Content-Type: text/html; charset=UTF-8');
 
 // Database connection details
-$db_host = '127.0.0.1:3306';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'portfolio_db';
+$db_host = getenv('DB_HOST') ?: '127.0.0.1:3306';
+$db_user = getenv('DB_USER') ?: 'root';
+$db_pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : (defined('DB_PASS') ? DB_PASS : '');
+$db_name = preg_replace('/[^a-zA-Z0-9_]/', '', (string)(getenv('DB_NAME') ?: 'portfolio_db'));
 
 echo '<!DOCTYPE html>';
 echo '<html lang="ar" dir="rtl">';
@@ -55,17 +55,18 @@ $errors = [];
 try {
     // Step 1: Connect to MySQL (without selecting database)
     echo '<div class="step"><span class="step-number">1</span> <strong>الاتصال بـ MySQL</strong></div>';
-    $pdo_no_db = new PDO("mysql:host={$db_host};charset=utf8mb4", $db_user, $db_pass);
+    $dsn = sprintf('mysql:host=%s;charset=utf8mb4', $db_host);
+    $pdo_no_db = new PDO($dsn, $db_user, $db_pass);
     $pdo_no_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo '<div class="success">✓ تم الاتصال بـ MySQL بنجاح</div>';
     
     // Step 2: Create database if not exists
     echo '<div class="step"><span class="step-number">2</span> <strong>إنشاء قاعدة البيانات</strong></div>';
-    $pdo_no_db->exec("CREATE DATABASE IF NOT EXISTS `{$db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    $pdo_no_db->exec("CREATE DATABASE IF NOT EXISTS `" . str_replace("`", "``", $db_name) . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     echo '<div class="success">✓ تم إنشاء قاعدة البيانات أو التأكد من وجودها</div>';
     
     // Step 3: Select the database
-    $pdo_no_db->exec("USE `{$db_name}`");
+    $pdo_no_db->exec("USE `" . str_replace("`", "``", $db_name) . "`");
     
     // Step 4: Import database.sql
     echo '<div class="step"><span class="step-number">3</span> <strong>استيراد database.sql</strong></div>';
@@ -122,7 +123,8 @@ try {
     
     foreach ($required_tables as $table_name => $table_desc) {
         try {
-            $stmt = $pdo_no_db->query("SELECT COUNT(*) as count FROM `{$table_name}`");
+            $safe_table = preg_replace('/[^a-zA-Z0-9_]/', '', (string)$table_name);
+            $stmt = $pdo_no_db->query("SELECT COUNT(*) as count FROM `" . str_replace("`", "``", $safe_table) . "`");
             $count = $stmt->fetchColumn();
             echo '<tr>';
             echo '<td><strong>' . htmlspecialchars($table_name) . '</strong></td>';
