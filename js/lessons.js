@@ -233,5 +233,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    loadLessons();
+    void loadLessons();
 });

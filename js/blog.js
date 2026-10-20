@@ -18,7 +18,7 @@ class BlogMediaGallery {
     
     init() {
         // Load all posts on page load
-        this.loadMediaPosts();
+        void this.loadMediaPosts();
         
         // Attach filter button listeners
         this.filterButtons.forEach(btn => {
@@ -27,7 +27,7 @@ class BlogMediaGallery {
         
         // Attach view more button listener
         if (this.viewMoreBtn) {
-            this.viewMoreBtn.addEventListener('click', () => this.loadMorePosts());
+            this.viewMoreBtn.addEventListener('click', () => { void this.loadMorePosts(); });
         }
     }
     
@@ -420,5 +420,5 @@ class BlogMediaGallery {
 
 // Initialize gallery when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new BlogMediaGallery();
+    window.blogMediaGallery = new BlogMediaGallery();
 });

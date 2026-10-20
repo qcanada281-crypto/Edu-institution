@@ -40,6 +40,7 @@ try {
                 }
                 unset($post['gallery_json']);
             }
+            unset($post);
             
             echo json_encode([
                 'success' => true,
@@ -75,6 +76,7 @@ try {
                 }
                 unset($post['gallery_json']);
             }
+            unset($post);
             
             echo json_encode([
                 'success' => true,
@@ -113,6 +115,7 @@ try {
                 }
                 unset($post['gallery_json']);
             }
+            unset($post);
             
             echo json_encode([
                 'success' => true,

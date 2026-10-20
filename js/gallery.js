@@ -38,7 +38,7 @@ class GalleryManager {
         this.attachLocationFilterListener();
         this.attachLightboxListeners();
         this.attachKeyboardShortcuts();
-        this.loadPhotosFromDatabase();
+        void this.loadPhotosFromDatabase();
     }
     
     /**
@@ -149,7 +149,7 @@ class GalleryManager {
         
         // Add locations to select dropdown
         if (this.locationSelect && this.locations.size > 0) {
-            const sortedLocations = Array.from(this.locations).sort();
+            const sortedLocations = Array.from(this.locations).sort((a, b) => a.localeCompare(b, 'ar'));
             sortedLocations.forEach(location => {
                 const option = document.createElement('option');
                 option.value = location;
@@ -324,7 +324,7 @@ class GalleryManager {
 
 // Initialize gallery when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new GalleryManager();
+    window.galleryManager = new GalleryManager();
 });
 
 // Add animations on scroll

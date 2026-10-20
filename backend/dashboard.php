@@ -25,6 +25,14 @@ $messages = $pdo->query("SELECT * FROM contact_messages ORDER BY created_at DESC
         <h1>مرحباً <?= htmlspecialchars($user['fullname']) ?></h1>
         <h2>آخر الرسائل</h2>
         <table>
+            <thead>
+                <tr>
+                    <th scope="col">الاسم</th>
+                    <th scope="col">البريد الإلكتروني</th>
+                    <th scope="col">الرسالة</th>
+                </tr>
+            </thead>
+            <tbody>
             <?php foreach($messages as $msg): ?>
             <tr>
                 <td><?= htmlspecialchars($msg['name']) ?></td>
@@ -32,6 +40,7 @@ $messages = $pdo->query("SELECT * FROM contact_messages ORDER BY created_at DESC
                 <td><?= htmlspecialchars($msg['message']) ?></td>
             </tr>
             <?php endforeach; ?>
+            </tbody>
         </table>
         <a href="logout.php" class="btn">تسجيل خروج</a>
     </div>

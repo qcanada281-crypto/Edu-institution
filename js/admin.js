@@ -2248,7 +2248,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (item.current_level) levels.add(item.current_level);
         });
         promoFilterLevel.innerHTML = '<option value="">كل المستويات</option>' +
-            Array.from(levels).sort().map(function (l) {
+            Array.from(levels).sort(function (a, b) { return String(a).localeCompare(String(b), 'ar'); }).map(function (l) {
                 return '<option value="' + escapeHtml(l) + '">' + escapeHtml(l) + '</option>';
             }).join('');
     }
@@ -2308,7 +2308,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         var html = '';
-        Object.keys(repartition).sort().forEach(function (level) {
+        Object.keys(repartition).sort(function (a, b) { return String(a).localeCompare(String(b), 'ar'); }).forEach(function (level) {
             var classes = repartition[level];
             html += '<div class="repartition-level-block">';
             html += '<h4><i class="fa-solid fa-layer-group"></i> ' + escapeHtml(level) + ' (' + classes.length + ' أقسام)</h4>';

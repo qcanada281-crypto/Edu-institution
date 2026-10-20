@@ -166,11 +166,11 @@ let animated = false;
 function animateStats() {
     stats.forEach(stat => {
         const text = stat.innerText;
-        const target = parseInt(text.replace(/[^0-9]/g, ''));
+        const target = Number.parseInt(text.replace(/[^0-9]/g, ''), 10);
         const hasPercent = text.includes('%');
         const hasPlus = text.includes('+');
         
-        if (isNaN(target)) return;
+        if (Number.isNaN(target)) return;
         
         let current = 0;
         const increment = Math.ceil(target / 50);
@@ -710,9 +710,11 @@ class GalleryPreview {
         this.filterButtons = document.querySelectorAll('.filter-btn');
         this.currentFilter = 'all';
         this.photos = [];
-        
+    }
+
+    init() {
         if (this.galleryGrid) {
-            this.loadPhotos();
+            void this.loadPhotos();
             this.setupFilters();
         }
     }
@@ -803,12 +805,15 @@ class GalleryPreview {
 }
 
 // تهيئة معاينة المعرض عند تحميل الصفحة
+function initGalleryPreview() {
+    const galleryPreview = new GalleryPreview();
+    galleryPreview.init();
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new GalleryPreview();
-    });
+    document.addEventListener('DOMContentLoaded', initGalleryPreview);
 } else {
-    new GalleryPreview();
+    initGalleryPreview();
 }
 // ========== CONTACT MAP ==========
 const contactMapContainer = document.querySelector("[data-contact-map]");

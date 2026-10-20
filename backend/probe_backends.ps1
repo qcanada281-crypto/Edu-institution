@@ -11,7 +11,7 @@ foreach ($f in $files) {
         $bodyFull = $resp.Content
     } catch {
         $err = $_.Exception.Response
-        if ($err -ne $null) {
+        if ($null -ne $err) {
             $status = [int]$err.StatusCode.value__
             $sr = $err.GetResponseStream()
             $reader = New-Object System.IO.StreamReader($sr)

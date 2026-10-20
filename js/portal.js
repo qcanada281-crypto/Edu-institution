@@ -145,10 +145,10 @@ function showDashboard() {
 
     fillStudentHeader();
     setupSemesterSelector();
-    loadGrades();
-    loadAttendance();
-    loadStats();
-    loadAnnouncements();
+    void loadGrades();
+    void loadAttendance();
+    void loadStats();
+    void loadAnnouncements();
 }
 
 function fillStudentHeader() {
