@@ -744,10 +744,13 @@ class GalleryPreview {
         photosToShow.forEach(photo => {
             const item = document.createElement('div');
             item.className = 'gallery-item';
-            item.dataset.category = photo.category || '';
+            item.dataset.category = encodeURIComponent(photo.category || '');
             
             const img = document.createElement('img');
-            img.src = photo.image_path || '';
+            const rawPath = typeof photo.image_path === 'string' ? photo.image_path.trim() : '';
+            if (rawPath && !/^\s*javascript:/i.test(rawPath)) {
+                img.src = encodeURI(rawPath);
+            }
             img.alt = photo.title || 'صورة من المعرض';
             img.loading = 'lazy';
             

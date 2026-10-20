@@ -36,7 +36,8 @@ try {
     
     foreach ($tables as $table) {
         try {
-            $stmt = $pdo->query("SELECT COUNT(*) as count FROM `{$table}`");
+            $safe_table = preg_replace('/[^a-zA-Z0-9_]/', '', (string)$table);
+            $stmt = $pdo->query("SELECT COUNT(*) as count FROM `" . str_replace("`", "``", $safe_table) . "`");
             $count = $stmt->fetchColumn();
             echo '<tr><td>' . htmlspecialchars($table) . '</td><td class="success">✓ Exists (' . $count . ' rows)</td></tr>';
         } catch (PDOException $e) {

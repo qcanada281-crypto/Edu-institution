@@ -152,11 +152,12 @@ $tables_status = [];
 
 foreach ($required_tables as $table_name => $columns) {
     try {
-        $result = $pdo->query("SELECT COUNT(*) as cnt FROM `{$table_name}`");
+        $safe_tbl = preg_replace('/[^a-zA-Z0-9_]/', '', (string)$table_name);
+        $result = $pdo->query("SELECT COUNT(*) as cnt FROM `" . str_replace("`", "``", $safe_tbl) . "`");
         $row_count = $result->fetchColumn();
         
         // Check columns
-        $col_result = $pdo->query("SHOW COLUMNS FROM `{$table_name}`");
+        $col_result = $pdo->query("SHOW COLUMNS FROM `" . str_replace("`", "``", $safe_tbl) . "`");
         $db_columns = $col_result->fetchAll(PDO::FETCH_COLUMN);
         $col_count = count($db_columns);
         

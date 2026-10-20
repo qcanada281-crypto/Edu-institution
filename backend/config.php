@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
         'lifetime' => 0,
         'path'     => '/',
         'domain'   => '',
-        'secure'   => $isSecure,
+        'secure'   => true,
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
