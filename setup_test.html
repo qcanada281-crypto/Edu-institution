@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Setup - Edu Institution</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        h1 { color: #333; border-bottom: 3px solid #6d4c41; padding-bottom: 10px; }
+        h2 { color: #555; margin-top: 30px; }
+        .box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+        .error {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+        .warning {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #ef6c00;
+        }
+        .info {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #1565c0;
+        }
+        button {
+            background: #6d4c41;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #4e342e; }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        .step { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #6d4c41; color: white; }
+        .credentials {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Setup - Edu Institution</h1>
+    
+    <div class="box info">
+        <h3>Informations de connexion par défaut:</h3>
+        <div class="credentials">
+            <strong>Directeur:</strong> admin@kawkab-ouloum.ma / Admin@2026<br>
+            <strong>Secrétaire:</strong> secretary@kawkab-ouloum.ma / Secretary@2026
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 1: Vérifier XAMPP</h2>
+        <div id="step1">
+            <button onclick="testXAMPP()">Tester XAMPP</button>
+            <div id="result1"></div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 2: Vérifier la Base de Données</h2>
+        <div id="step2">
+            <button onclick="testDatabase()">Tester Base de Données</button>
+            <div id="result2"></div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 3: Vérifier les Tables</h2>
+        <div id="step3">
+            <button onclick="testTables()">Tester Tables</button>
+            <div id="result3"></div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 4: Test Login Admin</h2>
+        <div id="step4">
+            <form id="loginForm" onsubmit="return testLogin(event)">
+                <label>Email:</label>
+                <input type="email" name="email" value="admin@kawkab-ouloum.ma" required style="width: 300px; padding: 8px;"><br><br>
+                <label>Mot de passe:</label>
+                <input type="password" name="code" value="Admin@2026" required style="width: 300px; padding: 8px;"><br><br>
+                <label>Rôle:</label>
+                <select name="role" style="padding: 8px;">
+                    <option value="director">Directeur</option>
+                    <option value="secretary">Secrétaire</option>
+                </select><br><br>
+                <button type="submit">Tester Connexion</button>
+            </form>
+            <div id="result4"></div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Liens rapides:</h2>
+        <ul>
+            <li><a href="admin.html" target="_blank">📋 Page Admin</a></li>
+            <li><a href="teacher.html" target="_blank">👨‍🏫 Page Enseignant</a></li>
+            <li><a href="index.html" target="_blank">🏠 Page d'accueil</a></li>
+            <li><a href="http://localhost:8080/phpmyadmin" target="_blank">🗄️ phpMyAdmin</a></li>
+        </ul>
+    </div>
+
+    <script>
+        const baseUrl = window.location.origin + '/edu-institution/';
+        
+        function showResult(id, html, type = '') {
+            document.getElementById(id).innerHTML = '<div class="step ' + type + '">' + html + '</div>';
+        }
+
+        async function testXAMPP() {
+            showResult('result1', 'Test en cours...', 'info');
+            try {
+                const response = await fetch(baseUrl + 'backend/test_connection.php');
+                if (response.ok) {
+                    const text = await response.text();
+                    try {
+                        const json = JSON.parse(text);
+                        if (json.status === 'ok') {
+                            showResult('result1', '<strong>✅ XAMPP fonctionne!</strong><br>Apache et MySQL sont en ligne.<br><pre>' + JSON.stringify(json, null, 2) + '</pre>', 'success');
+                        } else {
+                            showResult('result1', '<strong>⚠️ XAMPP partiel:</strong><br>' + JSON.stringify(json, null, 2), 'warning');
+                        }
+                    } catch(e) {
+                        showResult('result1', '<strong>⚠️ Réponse reçue mais pas JSON:</strong><br><pre>' + text.substring(0, 300) + '</pre>', 'warning');
+                    }
+                } else {
+                    showResult('result1', '<strong>❌ Erreur HTTP ' + response.status + '</strong>', 'error');
+                }
+            } catch (err) {
+                showResult('result1', '<strong>❌ Erreur connexion:</strong><br>' + err.message + '<br><br><em>Vérifiez que XAMPP (Apache + MySQL) est démarré</em>', 'error');
+            }
+        }
+
+        async function testDatabase() {
+            showResult('result2', 'Test en cours...', 'info');
+            try {
+                const response = await fetch(baseUrl + 'backend/db_test.php');
+                const text = await response.text();
+                showResult('result2', '<strong>Résultat:</strong><br><pre>' + text.substring(0, 500) + '</pre>', response.ok ? 'success' : 'error');
+            } catch (err) {
+                showResult('result2', '<strong>❌ Erreur:</strong><br>' + err.message, 'error');
+            }
+        }
+
+        async function testTables() {
+            showResult('result3', 'Test en cours...', 'info');
+            try {
+                const response = await fetch(baseUrl + 'backend/db_health.php');
+                const text = await response.text();
+                showResult('result3', '<strong>Résultat:</strong><br><pre>' + text.substring(0, 500) + '</pre>', response.ok ? 'success' : 'error');
+            } catch (err) {
+                showResult('result3', '<strong>❌ Erreur:</strong><br>' + err.message, 'error');
+            }
+        }
+
+        async function testLogin(event) {
+            event.preventDefault();
+            showResult('result4', 'Connexion en cours...', 'info');
+            
+            const form = document.getElementById('loginForm');
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(baseUrl + 'backend/admin_auth.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const text = await response.text();
+                console.log('Login response:', text);
+                
+                let result = '<strong>Status HTTP:</strong> ' + response.status + '<br>';
+                result += '<strong>Réponse:</strong><br><pre>' + text.substring(0, 500) + '</pre><br>';
+                
+                try {
+                    const json = JSON.parse(text);
+                    if (json.success) {
+                        result += '<div class="success"><strong>✅ CONNEXION RÉUSSIE!</strong><br>Bienvenue ' + (json.user?.full_name || '') + '</div>';
+                    } else {
+                        result += '<div class="error"><strong>❌ CONNEXION ÉCHOUÉE:</strong><br>' + (json.message || 'Identifiants incorrects') + '</div>';
+                    }
+                } catch(e) {
+                    result += '<div class="error"><strong>❌ Réponse invalide (pas JSON)</strong></div>';
+                }
+                
+                showResult('result4', result, '');
+            } catch (err) {
+                showResult('result4', '<strong>❌ Erreur réseau:</strong><br>' + err.message, 'error');
+            }
+        }
+
+        // Auto-test au chargement
+        window.onload = function() {
+            testXAMPP();
+        };
+    </script>
+</body>
+</html>

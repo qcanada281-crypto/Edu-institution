@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة | مؤسسة Kawkab Al Ouloum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="icon" type="image/x-icon" href="../images/school-64 (1).png">
+</head>
+<body class="admin-body">
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="../images/kawkab_alouloum.jpeg" alt="Kawkab Al Ouloum Logo" class="login-logo">
+                <h1>لوحة الإدارة</h1>
+                <p>مؤسسة Kawkab Al Ouloum</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fa-solid fa-envelope"></i>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" id="email" name="email" required placeholder="admin@kawkab-ouloum.ma">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fa-solid fa-lock"></i>
+                        كلمة المرور
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" required placeholder="••••••••">
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    تسجيل الدخول
+                </button>
+                
+                <div id="loginFeedback" class="feedback"></div>
+            </form>
+            
+            <div class="login-info">
+                <p><strong>بيانات الدخول الافتراضية:</strong></p>
+                <p>المدير: admin@kawkab-ouloum.ma / Admin@2026</p>
+                <p>السكرتارية: secretary@kawkab-ouloum.ma / Secretary@2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardPage" class="dashboard-page" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../images/kawkab_alouloum.jpeg" alt="Logo" class="sidebar-logo">
+                <div class="sidebar-title">
+                    <h3>Kawkab Al Ouloum</h3>
+                    <p>لوحة الإدارة</p>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fa-solid fa-home"></i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="#" class="nav-item" data-page="students">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>التلاميذ</span>
+                </a>
+                <a href="#" class="nav-item" data-page="teachers">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>الأساتذة</span>
+                </a>
+                <a href="#" class="nav-item" data-page="grades">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>النقط</span>
+                </a>
+                <a href="#" class="nav-item" data-page="attendance">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>الغياب</span>
+                </a>
+                <a href="#" class="nav-item" data-page="lessons">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>الدروس</span>
+                </a>
+                <a href="#" class="nav-item" data-page="messages">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>الرسائل</span>
+                </a>
+                <a href="#" class="nav-item" data-page="registrations">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                    <span>طلبات التسجيل</span>
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fa-solid fa-users-cog"></i>
+                    <span>إدارة الحسابات</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fa-solid fa-cog"></i>
+                    <span>الإعدادات</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <p id="adminName" class="admin-name">المدير</p>
+                        <p id="adminRole" class="admin-role">المدير</p>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn btn-outline btn-full">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h1 id="pageTitle">لوحة التحكم</h1>
+                    <p id="pageSubtitle">مرحباً بك في لوحة إدارة المؤسسة</p>
+                </div>
+                <div class="header-actions">
+                    <a href="../index.html" class="btn btn-outline">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        الموقع الرئيسي
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon students">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="studentsCount">0</h3>
+                            <p>عدد التلاميذ</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teachers">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="teachersCount">0</h3>
+                            <p>عدد الأساتذة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon grades">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="gradesCount">0</h3>
+                            <p>النقط المسجلة</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon attendance">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="attendanceCount">0</h3>
+                            <p>سجلات الغياب</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h2>النشاط الأخير</h2>
+                    <div id="recentActivityList" class="activity-list">
+                        <p class="muted">جاري تحميل النشاط...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Content -->
+            <div id="studentsContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة التلاميذ</h2>
+                    <button id="addStudentBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة طالب
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الكود</th>
+                                <th>الاسم الكامل</th>
+                                <th>القسم</th>
+                                <th>المستوى</th>
+                                <th>ولي الأمر</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr><td colspan="7" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teachers Content -->
+            <div id="teachersContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة الأساتذة</h2>
+                    <button id="addTeacherBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة أستاذ
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>المادة</th>
+                                <th>الهاتف</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachersTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grades Content -->
+            <div id="gradesContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة النقط</h2>
+                    <button id="addGradeBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة نقطة
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الطالب</th>
+                                <th>المادة</th>
+                                <th>المراقبة</th>
+                                <th>الامتحان</th>
+                                <th>المعامل</th>
+                                <th>الدورة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradesTableBody">
+                            <tr><td colspan="7" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attendance Content -->
+            <div id="attendanceContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة الغياب</h2>
+                    <button id="addAttendanceBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة غياب
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الطالب</th>
+                                <th>التاريخ</th>
+                                <th>الحصة</th>
+                                <th>المادة</th>
+                                <th>مبرر</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Lessons Content -->
+            <div id="lessonsContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة الدروس</h2>
+                    <button id="addLessonBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة درس
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>النوع</th>
+                                <th>المستوى</th>
+                                <th>المادة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessonsTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Messages Content -->
+            <div id="messagesContent" class="content-section">
+                <div class="section-header">
+                    <h2>رسائل التواصل</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الموضوع</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Registrations Content -->
+            <div id="registrationsContent" class="content-section">
+                <div class="section-header">
+                    <h2>طلبات التسجيل</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الكود</th>
+                                <th>الاسم الكامل</th>
+                                <th>القسم</th>
+                                <th>المستوى</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrationsTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Accounts Content -->
+            <div id="accountsContent" class="content-section">
+                <div class="section-header">
+                    <h2>إدارة الحسابات</h2>
+                    <button id="addAccountBtn" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i>
+                        إضافة حساب
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الدور</th>
+                                <th>الحالة</th>
+                                <th>آخر دخول</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountsTableBody">
+                            <tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div id="settingsContent" class="content-section">
+                <h2>الإعدادات</h2>
+                <p>صفحة الإعدادات قيد التطوير...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">عنوان النافذة</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/admin.js"></script>
+</body>
+</html>

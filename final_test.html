@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Test - Edu Institution</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 900px; margin: 0 auto; background: #f5f5f5; }
+        h1 { color: #333; border-bottom: 3px solid #6d4c41; }
+        .box { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .ok { background: #e8f5e9; border-left: 4px solid #4caf50; }
+        .error { background: #ffebee; border-left: 4px solid #f44336; }
+        .warning { background: #fff3e0; border-left: 4px solid #ff9800; }
+        .info { background: #e3f2fd; border-left: 4px solid #2196f3; }
+        button { background: #6d4c41; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #4e342e; }
+        pre { background: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 13px; border: 1px solid #ddd; }
+        .step { margin: 10px 0; padding: 15px; border-radius: 4px; }
+        h2 { margin-top: 30px; color: #555; }
+        .credentials { background: #e8f5e9; padding: 15px; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Final Test - Complete System Check</h1>
+    
+    <div class="credentials">
+        <h3>🔐 Identifiants par défaut:</h3>
+        <strong>Directeur:</strong> admin@kawkab-ouloum.ma / Admin@2026<br>
+        <strong>Secrétaire:</strong> secretary@kawkab-ouloum.ma / Secretary@2026
+    </div>
+
+    <div class="box">
+        <h2>Étape 1: Test Base de Données (Port 3308)</h2>
+        <button onclick="testDatabase()">Tester MySQL Port 3308</button>
+        <div id="result1"></div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 2: Test Configuration</h2>
+        <button onclick="testConfig()">Vérifier Configuration</button>
+        <div id="result2"></div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 3: Test Login Admin</h2>
+        <form id="loginForm" onsubmit="return testLogin(event)">
+            <label>Email:</label>
+            <input type="email" name="email" value="admin@kawkab-ouloum.ma" required style="width: 300px; padding: 8px; margin: 5px;"><br>
+            <label>Mot de passe:</label>
+            <input type="password" name="code" value="Admin@2026" required style="width: 300px; padding: 8px; margin: 5px;"><br>
+            <label>Rôle:</label>
+            <select name="role" style="padding: 8px; margin: 5px;">
+                <option value="director">Directeur</option>
+                <option value="secretary">Secrétaire</option>
+            </select><br><br>
+            <button type="submit">Tester Connexion</button>
+        </form>
+        <div id="result3"></div>
+    </div>
+
+    <div class="box">
+        <h2>Étape 4: Test URL Resolution</h2>
+        <button onclick="testUrls()">Vérifier URLs</button>
+        <div id="result4"></div>
+    </div>
+
+    <div class="box">
+        <h2>Liens rapides:</h2>
+        <ul>
+            <li><a href="http://localhost:8080/phpmyadmin" target="_blank">🗄️ phpMyAdmin (MySQL Port 3308)</a></li>
+            <li><a href="http://localhost:8080/edu-institution/admin.html" target="_blank">📋 Page Admin (XAMPP Port 8080)</a></li>
+            <li><a href="backend/seed.php" target="_blank">🌱 Créer Admin (seed.php)</a></li>
+            <li><a href="backend/test_db.php" target="_blank">🧪 Test DB Complet</a></li>
+        </ul>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        function showResult(id, html, type = '') {
+            document.getElementById(id).innerHTML = '<div class="step ' + type + '">' + html + '</div>';
+        }
+
+        async function testDatabase() {
+            showResult('result1', 'Test en cours...', 'info');
+            try {
+                const response = await fetch(buildApiUrl('test_db.php'));
+                const data = await response.json();
+                
+                let html = '<strong>Status:</strong> ' + data.overall_status + '<br>';
+                html += '<strong>MySQL Port:</strong> ' + data.mysql_port + '<br>';
+                html += '<strong>PHP Version:</strong> ' + data.php_version + '<br><br>';
+                
+                for (const [test, result] of Object.entries(data.tests)) {
+                    const ok = result.status === 'success';
+                    html += '<div style="color: ' + (ok ? 'green' : 'red') + ';">';
+                    html += '<strong>' + test + ':</strong> ' + result.message;
+                    html += '</div>';
+                }
+                
+                if (data.troubleshooting) {
+                    html += '<div style="background: #fff3e0; padding: 10px; margin-top: 10px; border-radius: 4px;">';
+                    html += '<strong>🔧 Troubleshooting:</strong><br>';
+                    html += 'Issue: ' + data.troubleshooting.issue + '<br>';
+                    html += 'Solution: ' + data.troubleshooting.solution;
+                    html += '</div>';
+                }
+                
+                showResult('result1', html, data.overall_status === 'success' ? 'ok' : 'error');
+            } catch (err) {
+                showResult('result1', '<strong>❌ Erreur:</strong> ' + err.message, 'error');
+            }
+        }
+
+        async function testConfig() {
+            showResult('result2', 'Test en cours...', 'info');
+            
+            let html = '<strong>Configuration chargée:</strong><br>';
+            html += 'Base URL: ' + APP_CONFIG.BASE_URL + '<br>';
+            html += 'API Base: ' + APP_CONFIG.API_BASE + '<br>';
+            html += 'Apache Port: ' + APP_CONFIG.APACHE_PORT + '<br>';
+            html += 'MySQL Port: ' + APP_CONFIG.MYSQL_PORT + '<br>';
+            html += 'Debug Mode: ' + (APP_CONFIG.DEBUG ? 'ON' : 'OFF') + '<br>';
+            
+            // Test URL construction
+            const testUrl = buildApiUrl('admin_auth.php');
+            html += '<br><strong>Test URL:</strong> ' + testUrl;
+            
+            showResult('result2', html, 'ok');
+        }
+
+        async function testUrls() {
+            showResult('result4', 'Test en cours...', 'info');
+            
+            const urls = [
+                'admin_auth.php',
+                'test_connection.php',
+                'test_db.php'
+            ];
+            
+            let html = '';
+            for (const url of urls) {
+                const fullUrl = buildApiUrl(url);
+                html += '<div>';
+                html += '<strong>' + url + ':</strong> ' + fullUrl + '<br>';
+                
+                try {
+                    const response = await fetch(fullUrl, { method: 'HEAD' });
+                    html += '<span style="color: green;">✅ Accessible (Status: ' + response.status + ')</span>';
+                } catch (err) {
+                    html += '<span style="color: red;">❌ Erreur: ' + err.message + '</span>';
+                }
+                html += '</div><br>';
+            }
+            
+            showResult('result4', html, 'ok');
+        }
+
+        async function testLogin(event) {
+            event.preventDefault();
+            showResult('result3', 'Connexion en cours...', 'info');
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            try {
+                const authEndpoint = buildApiUrl('admin_auth.php');
+                logDebug('Testing login to: ' + authEndpoint);
+                
+                const response = await fetch(authEndpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const text = await response.text();
+                console.log('Login response:', text);
+                
+                let html = '<strong>URL:</strong> ' + authEndpoint + '<br>';
+                html += '<strong>Status HTTP:</strong> ' + response.status + '<br>';
+                html += '<strong>Réponse:</strong><br><pre>' + text.substring(0, 500) + '</pre><br>';
+                
+                try {
+                    const json = JSON.parse(text);
+                    if (json.success) {
+                        html += '<div style="background: #e8f5e9; padding: 10px; border-radius: 4px; margin-top: 10px;">';
+                        html += '<strong>✅ CONNEXION RÉUSSIE!</strong><br>';
+                        html += 'Utilisateur: ' + (json.data?.user?.full_name || 'Inconnu') + '<br>';
+                        html += 'Rôle: ' + (json.data?.user?.role || 'Inconnu');
+                        html += '</div>';
+                        showResult('result3', html, 'ok');
+                    } else {
+                        html += '<div style="background: #ffebee; padding: 10px; border-radius: 4px; margin-top: 10px;">';
+                        html += '<strong>❌ CONNEXION ÉCHOUÉE:</strong><br>';
+                        html += json.message || 'Erreur inconnue';
+                        html += '</div>';
+                        showResult('result3', html, 'error');
+                    }
+                } catch(e) {
+                    html += '<div style="background: #fff3e0; padding: 10px; border-radius: 4px; margin-top: 10px;">';
+                    html += '<strong>⚠️ Réponse invalide (pas JSON)</strong><br>';
+                    html += 'Erreur: ' + e.message;
+                    html += '</div>';
+                    showResult('result3', html, 'warning');
+                }
+                
+            } catch (err) {
+                showResult('result3', '<strong>❌ Erreur réseau:</strong><br>' + err.message, 'error');
+            }
+            
+            return false;
+        }
+
+        // Auto-test on load
+        window.onload = function() {
+            testConfig();
+            setTimeout(testDatabase, 1000);
+        };
+    </script>
+</body>
+</html>

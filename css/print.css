@@ -1,0 +1,224 @@
+/* Print-only layout for portal documents (transcript, attendance, etc.). */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  :root {
+    --print-border: #a30606;
+    --print-muted: #030201;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    height: auto !important;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide site chrome and inputs. We only print the rendered result. */
+  .topbar,
+  .navbar,
+  .page-hero,
+  footer,
+  .section-soft,
+  form,
+  .btn,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Only keep the result panel on print pages. */
+  .panel {
+    display: none !important;
+  }
+  .panel.result-panel {
+    display: block !important;
+  }
+  .panel.result-panel > h3 {
+    display: none !important;
+  }
+
+  main,
+  .section-panel,
+  .container,
+  .panel-layout,
+  .panel,
+  .result-panel,
+  .result-box {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .panel-layout {
+    display: block !important;
+  }
+
+  /* Print mode switching. JS sets data-print-mode before window.print(). */
+  body[data-print-mode="transcript"] .print-attendance {
+    display: none !important;
+  }
+  body[data-print-mode="attendance"] .print-transcript {
+    display: none !important;
+  }
+
+  .print-document {
+    display: block !important;
+  }
+
+  .print-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--print-border);
+    margin-bottom: 12px;
+  }
+
+  .print-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .print-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border: 1px solid var(--print-border);
+    border-radius: 10px;
+  }
+
+  .print-brand-text {
+    line-height: 1.2;
+  }
+
+  .print-school {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .print-contact {
+    font-size: 11px;
+    color: var(--print-muted);
+    white-space: nowrap;
+  }
+
+  .print-meta {
+    text-align: left;
+    line-height: 1.2;
+  }
+
+  .print-title {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .print-date {
+    font-size: 11px;
+    color: var(--print-muted);
+  }
+
+  .result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 12px !important;
+  }
+
+  .chip {
+    border: 1px solid var(--print-border) !important;
+    background: transparent !important;
+    color: #000 !important;
+    padding: 6px 10px !important;
+    font-size: 11px !important;
+  }
+
+  .result-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 6px !important;
+  }
+
+  .result-table th,
+  .result-table td {
+    border: 1px solid var(--print-border) !important;
+    padding: 7px 8px !important;
+    font-size: 11px !important;
+    vertical-align: top;
+  }
+
+  .result-table thead th {
+    background: #041330 !important;
+    font-weight: 800 !important;
+  }
+
+  .summary-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 12px !important;
+    padding-top: 10px !important;
+    border-top: 1px solid var(--print-border) !important;
+  }
+
+  .attendance-stats {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px !important;
+    margin: 10px 0 12px !important;
+  }
+
+  .attendance-card {
+    border: 1px solid var(--print-border) !important;
+    background: transparent !important;
+    padding: 10px !important;
+  }
+
+  .attendance-card strong {
+    font-size: 18px !important;
+    color: #000 !important;
+  }
+
+  .attendance-card span {
+    font-size: 11px !important;
+    color: var(--print-muted) !important;
+  }
+
+  .print-signatures {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 22px !important;
+    page-break-inside: avoid;
+  }
+
+  .print-signature {
+    flex: 1;
+    border-top: 1px solid var(--print-border);
+    padding-top: 8px;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+  }
+}

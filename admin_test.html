@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Connexion Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .box { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        .info { background: #d1ecf1; border-color: #17a2b8; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; width: 250px; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test Connexion Admin</h1>
+    
+    <div class="box info">
+        <h3>Informations de connexion</h3>
+        <p><strong>Directeur:</strong> admin@kawkab-ouloum.ma / Admin@2026</p>
+        <p><strong>Secrétaire:</strong> secretary@kawkab-ouloum.ma / Secretary@2026</p>
+    </div>
+
+    <div class="box">
+        <h3>Test 1: Vérifier le backend</h3>
+        <button onclick="testBackend()">Tester test_connection.php</button>
+        <div id="result1"></div>
+    </div>
+
+    <div class="box">
+        <h3>Test 2: Vérifier admin_auth.php</h3>
+        <button onclick="testAdminAuth()">Tester admin_auth.php</button>
+        <div id="result2"></div>
+    </div>
+
+    <div class="box">
+        <h3>Test 3: Connexion complète</h3>
+        <form id="loginForm" onsubmit="return testLogin(event)">
+            <label>Email:</label>
+            <input type="email" name="email" value="admin@kawkab-ouloum.ma" required><br>
+            <label>Code:</label>
+            <input type="password" name="code" value="Admin@2026" required><br>
+            <label>Rôle:</label>
+            <select name="role">
+                <option value="director">Directeur</option>
+                <option value="secretary">Secrétaire</option>
+            </select><br>
+            <button type="submit">Tester la connexion</button>
+        </form>
+        <div id="result3"></div>
+    </div>
+
+    <script>
+        const baseUrl = window.location.origin + '/edu-institution/';
+        
+        function showResult(id, text, isError = false) {
+            document.getElementById(id).innerHTML = '<pre class="' + (isError ? 'error' : 'success') + '">' + text + '</pre>';
+        }
+        
+        async function testBackend() {
+            try {
+                const response = await fetch(baseUrl + 'backend/test_connection.php');
+                const text = await response.text();
+                showResult('result1', 'Status: ' + response.status + '\n' + text.substring(0, 1000));
+            } catch (err) {
+                showResult('result1', 'ERREUR: ' + err.message, true);
+            }
+        }
+        
+        async function testAdminAuth() {
+            try {
+                const formData = new FormData();
+                formData.append('email', 'test@test.com');
+                formData.append('code', 'test');
+                formData.append('role', 'director');
+                
+                const response = await fetch(baseUrl + 'backend/admin_auth.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const text = await response.text();
+                showResult('result2', 'Status: ' + response.status + '\nRéponse:\n' + text.substring(0, 500));
+            } catch (err) {
+                showResult('result2', 'ERREUR: ' + err.message, true);
+            }
+        }
+        
+        async function testLogin(event) {
+            event.preventDefault();
+            const form = document.getElementById('loginForm');
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch(baseUrl + 'backend/admin_auth.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const text = await response.text();
+                
+                let result = 'Status: ' + response.status + '\n';
+                try {
+                    const json = JSON.parse(text);
+                    result += 'JSON: ' + JSON.stringify(json, null, 2);
+                } catch(e) {
+                    result += 'Texte: ' + text.substring(0, 500);
+                }
+                
+                showResult('result3', result, response.status !== 200);
+            } catch (err) {
+                showResult('result3', 'ERREUR CONNEXION: ' + err.message, true);
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Simple - Admin Login</title>
+    <style>
+        body { font-family: Arial; padding: 20px; direction: rtl; }
+        .box { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffebee; border-color: #f44336; }
+        .success { background: #e8f5e9; border-color: #4caf50; }
+        button { padding: 10px 20px; cursor: pointer; }
+        input { padding: 8px; width: 300px; margin: 5px; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test Simple Connexion Admin</h1>
+    
+    <div class="box">
+        <h3>Test Direct (sans JavaScript complexe)</h3>
+        <p><strong>Email:</strong> admin@kawkab-ouloum.ma</p>
+        <p><strong>Code:</strong> Admin@2026</p>
+        <p><strong>Rôle:</strong> director</p>
+        <button onclick="testDirect()">Tester Connexion</button>
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        async function testDirect() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>En cours...</p>';
+            
+            try {
+                // Créer FormData
+                const formData = new FormData();
+                formData.append('email', 'admin@kawkab-ouloum.ma');
+                formData.append('code', 'Admin@2026');
+                formData.append('role', 'director');
+                
+                // URL complète
+                const url = window.location.origin + '/edu-institution/backend/admin_auth.php';
+                console.log('URL:', url);
+                
+                // Envoyer requête
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Status:', response.status);
+                const text = await response.text();
+                console.log('Response:', text.substring(0, 500));
+                
+                // Essayer de parser JSON
+                let result = '<h4>Résultat:</h4>';
+                result += '<p><strong>Status HTTP:</strong> ' + response.status + '</p>';
+                result += '<p><strong>Réponse brute:</strong></p><pre>' + text.substring(0, 500) + '</pre>';
+                
+                try {
+                    const json = JSON.parse(text);
+                    result += '<p class="success"><strong>JSON parsé:</strong></p><pre>' + JSON.stringify(json, null, 2) + '</pre>';
+                    if (json.success) {
+                        result += '<p class="success">✅ CONNEXION RÉUSSIE!</p>';
+                    } else {
+                        result += '<p class="error">❌ CONNEXION ÉCHOUÉE: ' + (json.message || 'Erreur inconnue') + '</p>';
+                    }
+                } catch(e) {
+                    result += '<p class="error">❌ Réponse n\'est pas du JSON valide</p>';
+                }
+                
+                resultDiv.innerHTML = result;
+                
+            } catch (err) {
+                resultDiv.innerHTML = '<div class="error"><p>❌ ERREUR RÉSEAU:</p><pre>' + err.message + '</pre></div>';
+                console.error('Erreur complète:', err);
+            }
+        }
+    </script>
+</body>
+</html>
