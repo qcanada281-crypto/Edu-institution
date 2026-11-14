@@ -377,4 +377,155 @@ if ($action === 'get_attendance') {
     }
 }
 
+// ==========================================
+// TRANSCRIPT PERMISSION REQUESTS MANAGEMENT
+// ==========================================
+if ($action === 'list_transcript_requests') {
+    ensure_transcript_requests_table();
+    try {
+        $requests = db_query(
+            'SELECT r.*, s.first_name, s.last_name, s.class_name, s.level, s.guardian_name, s.guardian_phone
+             FROM transcript_requests r
+             LEFT JOIN students s ON r.student_id = s.id
+             ORDER BY CASE WHEN r.status = "pending" THEN 0 ELSE 1 END, r.id DESC
+             LIMIT 200'
+        )->fetchAll();
+
+        $pendingCount = 0;
+        foreach ($requests as $r) {
+            if (($r['status'] ?? '') === 'pending') {
+                $pendingCount++;
+            }
+        }
+
+        json_response(true, 'تم جلب طلبات سحب النقط بنجاح.', [
+            'requests' => $requests,
+            'pending_count' => $pendingCount,
+            'can_manage' => in_array($currentRole, ['director', 'secretary'], true)
+        ]);
+    } catch (Throwable $exception) {
+        error_log('Admin List Transcript Requests Error: ' . $exception->getMessage());
+        json_response(false, 'وقع خطأ أثناء جلب طلبات سحب النقط.', [], 500);
+    }
+}
+
+if ($action === 'approve_transcript_request') {
+    ensure_transcript_requests_table();
+    $requestId = (int) ($_POST['request_id'] ?? 0);
+    $durationHours = (int) ($_POST['duration_hours'] ?? 24);
+    if ($durationHours < 0) {
+        $durationHours = 24;
+    }
+
+    if ($requestId <= 0) {
+        json_response(false, 'معرف الطلب غير صالح.');
+    }
+
+    try {
+        $req = db_query('SELECT * FROM transcript_requests WHERE id = :id', ['id' => $requestId])->fetch();
+        if (!$req) {
+            json_response(false, 'الطلب غير موجود.');
+        }
+
+        $expiresAt = $durationHours > 0 ? date('Y-m-d H:i:s', strtotime("+{$durationHours} hours")) : null;
+        $adminName = (string) ($_SESSION['user_name'] ?? 'الإدارة');
+
+        db_query(
+            'UPDATE transcript_requests
+             SET status = "approved", expires_at = :expires_at, approved_by = :approved_by, duration_hours = :duration_hours
+             WHERE id = :id',
+            [
+                'expires_at' => $expiresAt,
+                'approved_by' => $adminName,
+                'duration_hours' => $durationHours,
+                'id' => $requestId
+            ]
+        );
+
+        // Notify parent/student
+        ensure_parent_notifications_table();
+        $durationLabel = $durationHours > 0 ? "لمدة {$durationHours} ساعة" : "بشكل دائم";
+        db_query(
+            "INSERT INTO parent_notifications (massar_code, student_name, type, title, message)
+             VALUES (:massar, :name, 'grades', 'الموافقة على سحب بيان النقط', :msg)",
+            [
+                'massar' => $req['student_code'],
+                'name' => $req['requested_by'] ?: $req['student_code'],
+                'msg' => "وافقت إدارة المؤسسة على طلب سحب بيان النقط ({$durationLabel}). يمكنكم الآن الاطلاع على النقط وطباعتها بأمان."
+            ]
+        );
+
+        json_response(true, "تمت الموافقة على الطلب بنجاح وتفعيل إمكانية السحب {$durationLabel}.");
+    } catch (Throwable $exception) {
+        error_log('Admin Approve Transcript Request Error: ' . $exception->getMessage());
+        json_response(false, 'وقع خطأ أثناء الموافقة على الطلب.', [], 500);
+    }
+}
+
+if ($action === 'reject_transcript_request') {
+    ensure_transcript_requests_table();
+    $requestId = (int) ($_POST['request_id'] ?? 0);
+    $reason = clean_input((string) ($_POST['reason'] ?? 'تم رفض الطلب من طرف الإدارة. يرجى مراجعة إدارة المؤسسة.'));
+    if ($reason === '') {
+        $reason = 'تم رفض الطلب من طرف الإدارة. يرجى مراجعة إدارة المؤسسة.';
+    }
+
+    if ($requestId <= 0) {
+        json_response(false, 'معرف الطلب غير صالح.');
+    }
+
+    try {
+        $req = db_query('SELECT * FROM transcript_requests WHERE id = :id', ['id' => $requestId])->fetch();
+        if (!$req) {
+            json_response(false, 'الطلب غير موجود.');
+        }
+
+        $adminName = (string) ($_SESSION['user_name'] ?? 'الإدارة');
+
+        db_query(
+            'UPDATE transcript_requests
+             SET status = "rejected", admin_notes = :notes, approved_by = :approved_by
+             WHERE id = :id',
+            [
+                'notes' => $reason,
+                'approved_by' => $adminName,
+                'id' => $requestId
+            ]
+        );
+
+        // Notify parent
+        ensure_parent_notifications_table();
+        db_query(
+            "INSERT INTO parent_notifications (massar_code, student_name, type, title, message)
+             VALUES (:massar, :name, 'general', 'تحديث بخصوص طلب بيان النقط', :msg)",
+            [
+                'massar' => $req['student_code'],
+                'name' => $req['requested_by'] ?: $req['student_code'],
+                'msg' => "تم رفض طلب سحب بيان النقط من طرف الإدارة: {$reason}"
+            ]
+        );
+
+        json_response(true, 'تم رفض الطلب وتسجيل الملاحظة بنجاح.');
+    } catch (Throwable $exception) {
+        error_log('Admin Reject Transcript Request Error: ' . $exception->getMessage());
+        json_response(false, 'وقع خطأ أثناء رفض الطلب.', [], 500);
+    }
+}
+
+if ($action === 'delete_transcript_request') {
+    ensure_transcript_requests_table();
+    $requestId = (int) ($_POST['request_id'] ?? 0);
+    if ($requestId <= 0) {
+        json_response(false, 'معرف الطلب غير صالح.');
+    }
+
+    try {
+        db_query('DELETE FROM transcript_requests WHERE id = :id', ['id' => $requestId]);
+        json_response(true, 'تم حذف سجل الطلب بنجاح.');
+    } catch (Throwable $exception) {
+        error_log('Admin Delete Transcript Request Error: ' . $exception->getMessage());
+        json_response(false, 'وقع خطأ أثناء حذف الطلب.', [], 500);
+    }
+}
+
 json_response(false, 'الإجراء المطلوب غير مدعوم.', [], 400);

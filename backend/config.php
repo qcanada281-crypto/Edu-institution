@@ -1348,6 +1348,42 @@ function ensure_parent_notifications_table(): void
 }
 
 /**
+ * Ensure Transcript Requests Table exists for secure approval-based grade lookup
+ */
+function ensure_transcript_requests_table(): void
+{
+    static $checked = false;
+    if ($checked) {
+        return;
+    }
+    $checked = true;
+
+    try {
+        db_query(
+            "CREATE TABLE IF NOT EXISTS transcript_requests (
+                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                student_id INT UNSIGNED NOT NULL,
+                student_code VARCHAR(50) NOT NULL,
+                status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+                requested_by VARCHAR(120) NULL,
+                request_notes TEXT NULL,
+                admin_notes TEXT NULL,
+                approved_by VARCHAR(100) NULL,
+                duration_hours INT UNSIGNED NOT NULL DEFAULT 24,
+                expires_at DATETIME NULL,
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_tr_student_code (student_code),
+                INDEX idx_tr_status (status),
+                INDEX idx_tr_expires (expires_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+        );
+    } catch (Throwable $e) {
+        error_log('ensure_transcript_requests_table error: ' . $e->getMessage());
+    }
+}
+
+/**
  * Regenerate session securely upon login/privilege change to prevent Session Fixation
  */
 function secure_session_regenerate(): void

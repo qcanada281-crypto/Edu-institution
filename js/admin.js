@@ -1210,6 +1210,269 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Teacher absences auto-load error:", errAbsences);
         }
 
+        /* ------------------ Transcript Requests Management (admin) ------------------ */
+        const transcriptRequestsTableBody = document.getElementById('transcriptRequestsAdminTableBody');
+        const refreshTranscriptRequestsBtn = document.getElementById('refreshTranscriptRequestsBtn');
+        const transcriptRequestsTabBtn = document.querySelector('[data-tab-target="transcriptRequestsTab"]');
+        const filterStatusTranscript = document.getElementById('transcriptFilterStatus');
+        const searchCodeTranscript = document.getElementById('transcriptSearchCode');
+        const pendingTranscriptBadge = document.getElementById('pendingTranscriptBadge');
+        const transcriptAdminFeedback = document.getElementById('transcriptRequestsAdminFeedback');
+
+        let transcriptRequestsCache = [];
+        let canManageTranscriptRequests = false;
+
+        async function loadTranscriptRequestsAdmin() {
+            if (!transcriptRequestsTableBody) return;
+
+            transcriptRequestsTableBody.innerHTML = '<tr><td colspan="6" class="muted"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل طلبات سحب النقط...</td></tr>';
+            clearFeedback(transcriptAdminFeedback);
+
+            const formData = new FormData();
+            formData.append('action', 'list_transcript_requests');
+
+            try {
+                const { status, payload } = await postForm('backend/admin_records.php', formData);
+                if (!payload.success) {
+                    transcriptRequestsTableBody.innerHTML = `<tr><td colspan="6" class="muted">خطأ: ${escapeHtml(payload.message || 'تعذر جلب البيانات')}</td></tr>`;
+                    return;
+                }
+
+                const data = payload.data || {};
+                transcriptRequestsCache = Array.isArray(data.requests) ? data.requests : [];
+                canManageTranscriptRequests = data.can_manage !== false;
+
+                const pendingCount = Number(data.pending_count || 0);
+                if (pendingTranscriptBadge) {
+                    if (pendingCount > 0) {
+                        pendingTranscriptBadge.textContent = `${pendingCount}`;
+                        pendingTranscriptBadge.style.display = 'inline-block';
+                    } else {
+                        pendingTranscriptBadge.style.display = 'none';
+                    }
+                }
+
+                renderTranscriptRequestsAdminTable();
+            } catch (err) {
+                console.error("Transcript requests load error:", err);
+                transcriptRequestsTableBody.innerHTML = '<tr><td colspan="6" class="muted">تعذر الاتصال بالخادم.</td></tr>';
+            }
+        }
+
+        function renderTranscriptRequestsAdminTable() {
+            if (!transcriptRequestsTableBody) return;
+
+            const selectedStatus = String(filterStatusTranscript ? filterStatusTranscript.value : '');
+            const searchKeyword = String(searchCodeTranscript ? searchCodeTranscript.value : '').trim().toLowerCase();
+
+            const filtered = transcriptRequestsCache.filter((item) => {
+                if (selectedStatus !== '' && item.status !== selectedStatus) return false;
+                if (searchKeyword !== '') {
+                    const studentCode = String(item.student_code || '').toLowerCase();
+                    const studentName = String(item.first_name ? `${item.first_name} ${item.last_name}` : (item.requested_by || '')).toLowerCase();
+                    if (!studentCode.includes(searchKeyword) && !studentName.includes(searchKeyword)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                transcriptRequestsTableBody.innerHTML = '<tr><td colspan="6" class="muted">لا توجد طلبات سحب نقط مطابقة للبحث.</td></tr>';
+                return;
+            }
+
+            transcriptRequestsTableBody.innerHTML = filtered.map((item) => {
+                const fullName = item.first_name ? `${item.first_name} ${item.last_name}` : (item.requested_by || 'تلميذ');
+                const classLabel = item.class_name ? `${item.class_name} (${item.level || ''})` : '-';
+
+                let statusBadge = '';
+                if (item.status === 'pending') {
+                    statusBadge = '<span class="status-pill is-warning" style="background:#fef3c7; color:#d97706; border:1px solid #fde68a;"><i class="fa-solid fa-clock"></i> قيد الانتظار</span>';
+                } else if (item.status === 'approved') {
+                    const isExpired = item.expires_at && (new Date(item.expires_at).getTime() < Date.now());
+                    if (isExpired) {
+                        statusBadge = '<span class="status-pill" style="background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;"><i class="fa-solid fa-hourglass-end"></i> منتهي الصلاحية</span>';
+                    } else {
+                        statusBadge = '<span class="status-pill is-success" style="background:#dcfce7; color:#15803d; border:1px solid #bbf7d0;"><i class="fa-solid fa-check-circle"></i> مرخص ومقبول</span>';
+                    }
+                } else if (item.status === 'rejected') {
+                    statusBadge = '<span class="status-pill is-danger" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5;"><i class="fa-solid fa-circle-xmark"></i> مرفوض</span>';
+                }
+
+                let validityOrNotes = '';
+                if (item.status === 'approved') {
+                    validityOrNotes = `<div style="font-size:0.82rem; color:#065f46;">⏳ الصلاحية: <strong>${item.expires_at ? escapeHtml(item.expires_at) : 'دائمة'}</strong></div>`;
+                    if (item.approved_by) {
+                        validityOrNotes += `<small style="color:#64748b; display:block;">بواسطة: ${escapeHtml(item.approved_by)}</small>`;
+                    }
+                } else if (item.status === 'rejected') {
+                    validityOrNotes = `<div style="font-size:0.82rem; color:#991b1b;">السبب: ${escapeHtml(item.admin_notes || 'بدون تعليل')}</div>`;
+                } else {
+                    validityOrNotes = `<div style="font-size:0.82rem; color:#475569;">${escapeHtml(item.request_notes || 'طلب سحب عبر البوابة')}</div>`;
+                }
+
+                let actionsHtml = '';
+                if (canManageTranscriptRequests) {
+                    if (item.status === 'pending') {
+                        actionsHtml = `
+                            <div style="display:flex; flex-direction:column; gap:0.35rem;">
+                                <div style="display:flex; gap:0.3rem;">
+                                    <button type="button" class="btn btn-primary btn-small" data-approve-transcript-id="${item.id}" data-duration="24" title="ترخيص لمدة 24 ساعة">
+                                        <i class="fa-solid fa-check"></i> موافقة (24h)
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-small" data-approve-transcript-id="${item.id}" data-duration="48" title="ترخيص لمدة 48 ساعة">
+                                        48h
+                                    </button>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-small" data-reject-transcript-id="${item.id}" title="رفض الطلب">
+                                    <i class="fa-solid fa-xmark"></i> رفض
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionsHtml = `
+                            <div style="display:flex; gap:0.3rem; align-items:center;">
+                                ${item.status === 'rejected' ? `
+                                    <button type="button" class="btn btn-primary btn-small" data-approve-transcript-id="${item.id}" data-duration="24" title="إعادة الترخيص">
+                                        <i class="fa-solid fa-rotate-right"></i> ترخيص (24h)
+                                    </button>
+                                ` : `
+                                    <button type="button" class="btn btn-outline btn-small" data-approve-transcript-id="${item.id}" data-duration="48" title="تمديد الصلاحية 48 ساعة">
+                                        <i class="fa-solid fa-clock"></i> تمديد 48h
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-small" data-reject-transcript-id="${item.id}" title="إلغاء الترخيص">
+                                        <i class="fa-solid fa-ban"></i> حظر
+                                    </button>
+                                `}
+                                <button type="button" class="btn btn-outline btn-small" data-delete-transcript-id="${item.id}" style="color:#ef4444;" title="حذف السجل">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    actionsHtml = '<span class="muted" style="font-size:0.8rem;">اطلاع فقط</span>';
+                }
+
+                return `
+                    <tr>
+                        <td>
+                            <strong>${escapeHtml(fullName)}</strong>
+                            <div style="font-size:0.82rem; color:#0284c7; font-family:monospace; margin-top:2px;">
+                                <i class="fa-solid fa-id-card"></i> ${escapeHtml(item.student_code || '')}
+                            </div>
+                        </td>
+                        <td>${escapeHtml(classLabel)}</td>
+                        <td style="font-size:0.85rem; color:#475569;">${escapeHtml(item.created_at || '')}</td>
+                        <td>${statusBadge}</td>
+                        <td>${validityOrNotes}</td>
+                        <td>${actionsHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function processApproveTranscript(requestId, durationHours = 24) {
+            clearFeedback(transcriptAdminFeedback);
+            const formData = new FormData();
+            formData.append('action', 'approve_transcript_request');
+            formData.append('request_id', requestId);
+            formData.append('duration_hours', durationHours);
+
+            const { status, payload } = await postForm('backend/admin_records.php', formData);
+            if (!payload.success) {
+                showFeedback(transcriptAdminFeedback, payload.message || 'تعذر قبول الطلب.', 'is-error');
+                return;
+            }
+
+            showFeedback(transcriptAdminFeedback, payload.message || 'تمت الموافقة بنجاح.', 'is-success');
+            await loadTranscriptRequestsAdmin();
+        }
+
+        async function processRejectTranscript(requestId) {
+            clearFeedback(transcriptAdminFeedback);
+            const reason = prompt('يرجى إدخال سبب الرفض الموجه للتلميذ / ولي الأمر:', 'يرجى مراجعة إدارة المؤسسة مباشرة.');
+            if (reason === null) return; // cancelled
+
+            const formData = new FormData();
+            formData.append('action', 'reject_transcript_request');
+            formData.append('request_id', requestId);
+            formData.append('reason', reason);
+
+            const { status, payload } = await postForm('backend/admin_records.php', formData);
+            if (!payload.success) {
+                showFeedback(transcriptAdminFeedback, payload.message || 'تعذر رفض الطلب.', 'is-error');
+                return;
+            }
+
+            showFeedback(transcriptAdminFeedback, payload.message || 'تم رفض الطلب بنجاح.', 'is-success');
+            await loadTranscriptRequestsAdmin();
+        }
+
+        async function processDeleteTranscript(requestId) {
+            if (!confirm('هل أنت متأكد من حذف هذا السجل نهائياً؟')) return;
+
+            clearFeedback(transcriptAdminFeedback);
+            const formData = new FormData();
+            formData.append('action', 'delete_transcript_request');
+            formData.append('request_id', requestId);
+
+            const { status, payload } = await postForm('backend/admin_records.php', formData);
+            if (!payload.success) {
+                showFeedback(transcriptAdminFeedback, payload.message || 'تعذر حذف السجل.', 'is-error');
+                return;
+            }
+
+            showFeedback(transcriptAdminFeedback, 'تم حذف السجل بنجاح.', 'is-success');
+            await loadTranscriptRequestsAdmin();
+        }
+
+        if (transcriptRequestsTableBody) {
+            transcriptRequestsTableBody.addEventListener('click', (e) => {
+                const approveBtn = e.target.closest('[data-approve-transcript-id]');
+                if (approveBtn) {
+                    const id = approveBtn.getAttribute('data-approve-transcript-id');
+                    const duration = approveBtn.getAttribute('data-duration') || '24';
+                    void processApproveTranscript(id, parseInt(duration, 10));
+                    return;
+                }
+
+                const rejectBtn = e.target.closest('[data-reject-transcript-id]');
+                if (rejectBtn) {
+                    const id = rejectBtn.getAttribute('data-reject-transcript-id');
+                    void processRejectTranscript(id);
+                    return;
+                }
+
+                const deleteBtn = e.target.closest('[data-delete-transcript-id]');
+                if (deleteBtn) {
+                    const id = deleteBtn.getAttribute('data-delete-transcript-id');
+                    void processDeleteTranscript(id);
+                    return;
+                }
+            });
+        }
+
+        if (refreshTranscriptRequestsBtn) {
+            refreshTranscriptRequestsBtn.addEventListener('click', () => void loadTranscriptRequestsAdmin());
+        }
+        if (transcriptRequestsTabBtn) {
+            transcriptRequestsTabBtn.addEventListener('click', () => void loadTranscriptRequestsAdmin());
+        }
+        if (filterStatusTranscript) {
+            filterStatusTranscript.addEventListener('change', renderTranscriptRequestsAdminTable);
+        }
+        if (searchCodeTranscript) {
+            searchCodeTranscript.addEventListener('input', renderTranscriptRequestsAdminTable);
+        }
+
+        try {
+            await loadTranscriptRequestsAdmin();
+        } catch (errTr) {
+            console.error("Transcript requests auto-load error:", errTr);
+        }
+
         /* ------------------ Teachers management (admin) ------------------ */
         const teachersPendingStatus = document.getElementById('teachersPendingStatus');
         const teachersPendingList = document.getElementById('teachersPendingList');

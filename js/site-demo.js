@@ -30,6 +30,44 @@
     const DEMO_MESSAGES_KEY = DEMO_STORAGE_PREFIX + 'contact_messages';
     const DEMO_GALLERY_KEY = DEMO_STORAGE_PREFIX + 'gallery_photos';
     const DEMO_COURSES_KEY = DEMO_STORAGE_PREFIX + 'school_courses';
+    const DEMO_TRANSCRIPT_REQS_KEY = DEMO_STORAGE_PREFIX + 'transcript_requests';
+
+    const INITIAL_TRANSCRIPT_REQS = [
+        {
+            id: 1,
+            student_id: 1,
+            student_code: 'STU2026001',
+            first_name: 'ياسين',
+            last_name: 'الناجي',
+            class_name: 'الأولى بكالوريا - علوم تجريبية',
+            level: 'ثانوي تأهيلي',
+            status: 'pending',
+            requested_by: 'ياسين الناجي',
+            request_notes: 'طلب ترخيص لسحب بيان النقط السنوي',
+            admin_notes: null,
+            approved_by: null,
+            duration_hours: 24,
+            expires_at: null,
+            created_at: '2026-11-14 10:30'
+        },
+        {
+            id: 2,
+            student_id: 2,
+            student_code: 'G145000000',
+            first_name: 'مريم',
+            last_name: 'العلمي',
+            class_name: 'الثالثة إعدادي - فوج 2',
+            level: 'إعدادي',
+            status: 'approved',
+            requested_by: 'مريم العلمي',
+            request_notes: 'طلب سحب كشف النقط لاجتياز مباراة',
+            admin_notes: 'تمت الموافقة من طرف الإدارة',
+            approved_by: 'السيد المدير',
+            duration_hours: 24,
+            expires_at: '2026-11-15 14:00',
+            created_at: '2026-11-14 09:15'
+        }
+    ];
 
     // Environment detection
     const isVercelHost = window.location.hostname.includes('vercel.app');
@@ -158,6 +196,24 @@
             guardian_email: 'k.chraibi@example.com',
             registration_status: 'pending',
             is_request: 'yes'
+        },
+        {
+            id: 7,
+            student_code: 'G1450000000',
+            first_name: 'خالد',
+            last_name: 'المحاطي',
+            birth_date: '2005-07-07',
+            gender: 'male',
+            class_name: '2-bac',
+            level: 'Lycée',
+            email: 'khalid.mohati@example.ma',
+            phone: '0676769888',
+            address: 'مراكش المحاميد',
+            guardian_name: 'المحاطي',
+            guardian_phone: '0676769888',
+            guardian_email: 'guardian@example.com',
+            registration_status: 'approved',
+            is_request: 'no'
         }
     ];
 
@@ -1093,13 +1149,154 @@
         // ==========================================
         if (path.includes('transcript_lookup.php')) {
             const studentCode = String(params.student_code || '').trim().toUpperCase();
+            const birthDate = String(params.birth_date || '').trim();
+            const actionReq = String(params.action || 'lookup');
             const students = getStoredData(DEMO_STUDENTS_KEY, INITIAL_STUDENTS);
-            const student = students.find(s => s.student_code.toUpperCase() === studentCode) || students[0];
+            let student = students.find(s => s.student_code.toUpperCase() === studentCode);
+            if (!student) {
+                const trimmed = studentCode.replace(/0+$/, '');
+                student = students.find(s => s.student_code.toUpperCase().replace(/0+$/, '') === trimmed);
+            }
 
+            if (!student) {
+                return createJsonResponse({
+                    success: false,
+                    message: 'لم يتم العثور على أي تلميذ مسجل بهذا الرمز.'
+                }, 200);
+            }
+
+            if (!birthDate) {
+                return createJsonResponse({
+                    success: false,
+                    message: 'يرجى إدخال تاريخ الازدياد للتحقق من الهوية وحماية خصوصية النقط.'
+                }, 200);
+            }
+
+            if (student.birth_date && student.birth_date !== birthDate) {
+                return createJsonResponse({
+                    success: false,
+                    message: 'تاريخ الازدياد المدخل غير مطابق لمعلومات التلميذ.'
+                }, 200);
+            }
+
+            let reqs = getStoredData(DEMO_TRANSCRIPT_REQS_KEY, INITIAL_TRANSCRIPT_REQS);
+            let latestReq = reqs.find(r => r.student_code.toUpperCase() === studentCode);
+
+            // Handle submission of new permission request
+            if (actionReq === 'request_permission') {
+                if (latestReq && latestReq.status === 'pending') {
+                    return createJsonResponse({
+                        success: true,
+                        message: 'يوجد بالفعل طلب ترخيص قيد المراجعة لدى الإدارة.',
+                        data: {
+                            request_status: 'pending',
+                            student: {
+                                full_name: `${student.first_name} ${student.last_name}`,
+                                student_code: student.student_code,
+                                class_name: student.class_name
+                            }
+                        }
+                    });
+                }
+
+                const newReq = {
+                    id: Date.now(),
+                    student_id: student.id,
+                    student_code: student.student_code,
+                    first_name: student.first_name,
+                    last_name: student.last_name,
+                    class_name: student.class_name,
+                    level: student.level,
+                    status: 'pending',
+                    requested_by: `${student.first_name} ${student.last_name}`,
+                    request_notes: params.notes || 'طلب سحب بيان النقط عبر البوابة',
+                    admin_notes: null,
+                    approved_by: null,
+                    duration_hours: 24,
+                    expires_at: null,
+                    created_at: new Date().toLocaleString('sv-SE').replace('T', ' ').substring(0, 16)
+                };
+
+                reqs.unshift(newReq);
+                setStoredData(DEMO_TRANSCRIPT_REQS_KEY, reqs);
+
+                return createJsonResponse({
+                    success: true,
+                    message: 'تم إرسال طلب إذن سحب النقط إلى الإدارة بنجاح.',
+                    data: {
+                        request_status: 'pending',
+                        student: {
+                            full_name: `${student.first_name} ${student.last_name}`,
+                            student_code: student.student_code,
+                            class_name: student.class_name
+                        }
+                    }
+                });
+            }
+
+            // Normal Lookup: Check permission
+            if (!latestReq) {
+                return createJsonResponse({
+                    success: false,
+                    message: 'يتطلب سحب بيان النقط إذنًا مسبقًا وموافقة رسمية من إدارة المؤسسة لحماية خصوصية التلميذ.',
+                    data: {
+                        need_permission: true,
+                        request_status: 'none',
+                        student: {
+                            full_name: `${student.first_name} ${student.last_name}`,
+                            student_code: student.student_code,
+                            class_name: student.class_name,
+                            level: student.level
+                        }
+                    }
+                });
+            }
+
+            if (latestReq.status === 'pending') {
+                return createJsonResponse({
+                    success: false,
+                    message: 'طلب سحب بيان النقط قيد المراجعة حالياً من طرف إدارة المؤسسة.',
+                    data: {
+                        need_permission: true,
+                        request_status: 'pending',
+                        student: {
+                            full_name: `${student.first_name} ${student.last_name}`,
+                            student_code: student.student_code,
+                            class_name: student.class_name,
+                            level: student.level
+                        }
+                    }
+                });
+            }
+
+            if (latestReq.status === 'rejected') {
+                return createJsonResponse({
+                    success: false,
+                    message: 'تم رفض طلب سحب النقط من طرف الإدارة.',
+                    data: {
+                        need_permission: true,
+                        request_status: 'rejected',
+                        admin_notes: latestReq.admin_notes || 'يرجى مراجعة إدارة المؤسسة مباشرة.',
+                        student: {
+                            full_name: `${student.first_name} ${student.last_name}`,
+                            student_code: student.student_code,
+                            class_name: student.class_name,
+                            level: student.level
+                        }
+                    }
+                });
+            }
+
+            // Approved: Return grades!
             return createJsonResponse({
                 success: true,
-                message: 'تم استخراج بيان النقط بنجاح.',
+                message: 'تم استخراج بيان النقط بنجاح بموجب ترخيص رسمي من إدارة المؤسسة.',
                 data: {
+                    permission: {
+                        approved: true,
+                        approved_by: latestReq.approved_by || 'السيد المدير',
+                        expires_at: latestReq.expires_at || null
+                    },
                     student: {
                         full_name: `${student.first_name} ${student.last_name}`,
                         student_code: student.student_code,
@@ -1337,6 +1534,77 @@
         }
 
         if (path.includes('admin_records.php')) {
+            if (action === 'list_transcript_requests') {
+                let reqs = getStoredData(DEMO_TRANSCRIPT_REQS_KEY, INITIAL_TRANSCRIPT_REQS);
+                let pendingCount = reqs.filter(r => r.status === 'pending').length;
+                return createJsonResponse({
+                    success: true,
+                    message: 'تم جلب طلبات سحب النقط بنجاح.',
+                    data: {
+                        requests: reqs,
+                        pending_count: pendingCount,
+                        can_manage: true
+                    }
+                });
+            }
+
+            if (action === 'approve_transcript_request') {
+                let reqs = getStoredData(DEMO_TRANSCRIPT_REQS_KEY, INITIAL_TRANSCRIPT_REQS);
+                let rId = Number(params.request_id || 0);
+                let duration = Number(params.duration_hours || 24);
+                let exp = new Date(Date.now() + duration * 3600 * 1000).toLocaleString('sv-SE').replace('T', ' ').substring(0, 16);
+                
+                reqs = reqs.map(r => {
+                    if (Number(r.id) === rId) {
+                        return Object.assign({}, r, {
+                            status: 'approved',
+                            expires_at: exp,
+                            approved_by: 'السيد المدير',
+                            duration_hours: duration
+                        });
+                    }
+                    return r;
+                });
+                setStoredData(DEMO_TRANSCRIPT_REQS_KEY, reqs);
+                return createJsonResponse({
+                    success: true,
+                    message: `تمت الموافقة بنجاح وتفعيل إمكانية السحب لمدة ${duration} ساعة.`
+                });
+            }
+
+            if (action === 'reject_transcript_request') {
+                let reqs = getStoredData(DEMO_TRANSCRIPT_REQS_KEY, INITIAL_TRANSCRIPT_REQS);
+                let rId = Number(params.request_id || 0);
+                let reason = params.reason || 'تم رفض الطلب من طرف الإدارة.';
+
+                reqs = reqs.map(r => {
+                    if (Number(r.id) === rId) {
+                        return Object.assign({}, r, {
+                            status: 'rejected',
+                            admin_notes: reason,
+                            approved_by: 'السيد المدير'
+                        });
+                    }
+                    return r;
+                });
+                setStoredData(DEMO_TRANSCRIPT_REQS_KEY, reqs);
+                return createJsonResponse({
+                    success: true,
+                    message: 'تم رفض الطلب وتسجيل الملاحظة بنجاح.'
+                });
+            }
+
+            if (action === 'delete_transcript_request') {
+                let reqs = getStoredData(DEMO_TRANSCRIPT_REQS_KEY, INITIAL_TRANSCRIPT_REQS);
+                let rId = Number(params.request_id || 0);
+                reqs = reqs.filter(r => Number(r.id) !== rId);
+                setStoredData(DEMO_TRANSCRIPT_REQS_KEY, reqs);
+                return createJsonResponse({
+                    success: true,
+                    message: 'تم حذف السجل بنجاح.'
+                });
+            }
+
             if (action === 'get_grades') {
                 return createJsonResponse({
                     success: true,

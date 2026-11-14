@@ -48,26 +48,40 @@
         <section class="section-panel">
             <div class="container panel-layout">
                 <div class="panel" data-reveal>
+                    <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+                        <span style="background: #e0f2fe; color: #0284c7; padding: 0.35rem 0.65rem; border-radius: 8px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-shield-halved"></i> نظام آمن ومحمي
+                        </span>
+                    </div>
                     <h3>إدخال معلومات التلميذ</h3>
-                    <p class="helper">أدخل كود الطالب لعرض كشف النقاط الكامل.</p>
+                    <p class="helper">أدخل كود الطالب وتاريخ ازدياده للتحقق من الصلاحية واستخراج كشف النقاط.</p>
+
+                    <div style="background: rgba(14, 165, 233, 0.07); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.88rem; color: #0369a1; line-height: 1.5;">
+                        <i class="fa-solid fa-user-lock"></i> <strong>حماية الخصوصية:</strong> لضمان سرية النتائج ومنع أي اطلاع غير مصرح به، يتطلب استخراج البيان ترخيصاً مسبقاً من إدارة المؤسسة.
+                    </div>
+
                     <form id="transcriptForm" action="backend/transcript_lookup.php" method="post">
                         <div class="form-grid compact">
                             <div class="field">
-                                <label for="transcript_student_code">كود الطالب *</label>
-                                <input id="transcript_student_code" name="student_code" type="text" required>
+                                <label for="transcript_student_code">كود الطالب (رمز مسار) *</label>
+                                <input id="transcript_student_code" name="student_code" type="text" placeholder="مثال: G145000000 أو STU2026001" autocomplete="off" required>
+                            </div>
+                            <div class="field">
+                                <label for="transcript_birth_date">تاريخ الازدياد *</label>
+                                <input id="transcript_birth_date" name="birth_date" type="date" required>
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn btn-primary" type="submit" id="transcriptSubmitBtn" style="width: 100%; justify-content: center; margin-top: 0.5rem;">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            عرض بيان النقط
+                            التحقق واستخراج بيان النقط
                         </button>
                     </form>
                 </div>
 
                 <div class="panel result-panel" data-reveal style="--delay: 0.12s;">
-                    <h3>النتيجة</h3>
+                    <h3>النتيجة وحالة الترخيص</h3>
                     <div id="transcriptResult" class="result-box">
-                        <p class="muted">لم يتم استخراج أي بيان بعد.</p>
+                        <p class="muted">أدخل كود الطالب وتاريخ ازدياده للتحقق من ترخيص الإدارة وعرض النقط.</p>
                     </div>
                 </div>
             </div>
@@ -75,10 +89,11 @@
 
         <section class="section-panel section-soft">
             <div class="container" data-reveal>
-                <h3>طريقة الاستعمال</h3>
+                <h3>كيف يعمل نظام الترخيص الآمن لسحب النقط؟</h3>
                 <ul class="info-list">
-                    <li><i class="fa-solid fa-check"></i> اطلب كود الطالب من الإدارة.</li>
-                    <li><i class="fa-solid fa-check"></i> يمكن طباعة البيان مباشرة بعد ظهوره.</li>
+                    <li><i class="fa-solid fa-shield-check"></i> <strong>التحقق المزدوج:</strong> كود الطالب وتاريخ ازدياده يضمنان عدم تمكن أي طرف غريب من طلب النقط.</li>
+                    <li><i class="fa-solid fa-paper-plane"></i> <strong>طلب ترخيص فوري:</strong> في حال لم يكن لديك إذن مسبق، يمكنك إرسال طلب إذن للإدارة بنقرة زر واحدة من هذه الصفحة.</li>
+                    <li><i class="fa-solid fa-circle-check"></i> <strong>الموافقة الرسمية:</strong> تراجع الإدارة الطلب وتمنح ترخيصاً مؤقتاً لسحب وتحميل بيان النقط بصيغة PDF الرسمية.</li>
                 </ul>
             </div>
         </section>

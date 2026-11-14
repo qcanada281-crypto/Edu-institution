@@ -245,6 +245,12 @@
                                 <span id="urgentAbsencesBadge"
                                     style="display:none; background:#ef4444; color:white; padding:0.1rem 0.5rem; border-radius:10px; font-size:0.75rem; font-weight:bold; margin-right:0.3rem;"></span>
                             </button>
+                            <button type="button" class="tab-btn" data-tab-target="transcriptRequestsTab">
+                                <i class="fa-solid fa-file-shield"></i>
+                                طلبات سحب النقط
+                                <span id="pendingTranscriptBadge"
+                                    style="display:none; background:#ef4444; color:white; padding:0.1rem 0.5rem; border-radius:10px; font-size:0.75rem; font-weight:bold; margin-right:0.3rem;"></span>
+                            </button>
                         </nav>
 
                         <p id="directorAccessNote" class="status-note access-note" data-role-only="director" hidden>
@@ -1130,6 +1136,60 @@
                                     </table>
                                 </div>
                                 <div id="teacherAbsencesAdminFeedback" class="feedback" aria-live="polite"></div>
+                            </article>
+                        </section>
+
+                        <!-- ========== TRANSCRIPT REQUESTS TAB ========== -->
+                        <section id="transcriptRequestsTab" class="tab-panel" hidden>
+                            <article class="admin-block full-width">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                                    <h3><i class="fa-solid fa-file-shield" style="color: #0284c7;"></i> طلبات وتراخيص سحب بيان النقط</h3>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button id="refreshTranscriptRequestsBtn" class="btn btn-outline" type="button">
+                                            <i class="fa-solid fa-rotate"></i> تحديث الطلبات
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="helper">
+                                    <strong>نظام حماية خصوصية بيانات التلاميذ:</strong> لمنع أي شخص من الاطلاع على نقط التلاميذ وابتزازهم، يخضع استخراج بيان النقط لموافقة الإدارة. يمكنك هنا منح ترخيص مؤقت (24 أو 48 ساعة) أو رفض الطلب مع توجيه أو تعليل.
+                                </p>
+
+                                <div class="table-tools" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.2rem;">
+                                    <div class="field">
+                                        <label for="transcriptFilterStatus">تصفية حسب الحالة</label>
+                                        <select id="transcriptFilterStatus">
+                                            <option value="pending" selected>معلقة (قيد الانتظار)</option>
+                                            <option value="">جميع الحالات</option>
+                                            <option value="approved">تمت الموافقة (مرخص)</option>
+                                            <option value="rejected">مرفوضة</option>
+                                        </select>
+                                    </div>
+                                    <div class="field">
+                                        <label for="transcriptSearchCode">بحث برمز مسار أو الاسم</label>
+                                        <input id="transcriptSearchCode" type="search" placeholder="ابحث برقم مسار أو اسم التلميذ...">
+                                    </div>
+                                </div>
+
+                                <div class="table-wrap">
+                                    <table class="admin-table">
+                                        <thead>
+                                            <tr>
+                                                <th>التلميذ ورمز مسار</th>
+                                                <th>القسم والمستوى</th>
+                                                <th>تاريخ الطلب</th>
+                                                <th>الحالة</th>
+                                                <th>الملاحظات / الصلاحية</th>
+                                                <th>إجراءات الإدارة</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transcriptRequestsAdminTableBody">
+                                            <tr>
+                                                <td colspan="6" class="muted">قم بتسجيل الدخول للإدارة لتحميل الطلبات.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="transcriptRequestsAdminFeedback" class="feedback" aria-live="polite"></div>
                             </article>
                         </section>
 

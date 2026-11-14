@@ -233,7 +233,8 @@ function escapeHtml(value) {
 }
 
 async function postFormAsJson(form) {
-    const response = await fetch(form.action, {
+    const actionUrl = form.getAttribute("action") || (typeof form.action === "string" ? form.action : "");
+    const response = await fetch(actionUrl, {
         method: "POST",
         body: new FormData(form),
         headers: {
@@ -374,13 +375,174 @@ function renderTranscript(payload) {
     }
 
     if (!payload.success) {
-        transcriptResult.innerHTML = `<p class="muted">${escapeHtml(payload.message || "تعذر استخراج بيان النقط.")}</p>`;
+        const data = payload.data || {};
+        
+        // Handle Security / Approval states
+        if (data.need_permission) {
+            const student = data.student || {};
+            const reqStatus = data.request_status || 'none';
+
+            if (reqStatus === 'none' || reqStatus === 'expired') {
+                const isExpired = reqStatus === 'expired';
+                transcriptResult.innerHTML = `
+                    <div class="transcript-permission-card" style="padding: 1.5rem; border-radius: 14px; background: #ffffff; border: 1.5px solid #bae6fd; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.1); text-align: center; animation: fadeIn 0.3s ease;">
+                        <div style="width: 58px; height: 58px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem;">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h4 style="color: #0c4a6e; margin-bottom: 0.6rem; font-size: 1.25rem; font-weight: 800;">
+                            ${isExpired ? '⚠️ انتهت صلاحية ترخيص سحب النقط' : '🔒 ترخيص أمني مطلوب لسحب النقط'}
+                        </h4>
+                        <p style="color: #475569; font-size: 0.92rem; line-height: 1.65; max-width: 520px; margin: 0 auto 1.2rem;">
+                            ${isExpired 
+                                ? 'انتهت مدة الصلاحية الممنوحة مسبقاً من طرف الإدارة. يرجى إرسال طلب جديد لتجديد إمكانية السحب والتحميل.' 
+                                : 'حفاظاً على خصوصية التلميذ وسرية نتائجه ومنع أي شخص من الاطلاع غير المصرح به أو الابتزاز، يخضع استخراج بيان النقط لترخيص وموافقة مسبقة من إدارة المؤسسة.'}
+                        </p>
+
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1.2rem; margin-bottom: 1.4rem; display: inline-flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; font-size: 0.92rem; color: #1e293b;">
+                            <span>👤 التلميذ(ة): <strong>${escapeHtml(student.full_name || '')}</strong></span>
+                            <span>🏷️ رمز مسار: <strong>${escapeHtml(student.student_code || '')}</strong></span>
+                            <span>🏫 القسم: <strong>${escapeHtml(student.class_name || '')}</strong></span>
+                        </div>
+
+                        <div style="max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem;">
+                            <input type="text" id="transcriptReqReason" placeholder="ملاحظة أو سبب الطلب (اختياري)..." style="width: 100%; padding: 0.65rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; box-sizing: border-box;">
+                            <button type="button" class="btn btn-primary" id="btnSendTranscriptPermission" style="justify-content: center; width: 100%; padding: 0.75rem;">
+                                <i class="fa-solid fa-paper-plane"></i> إرسال طلب ترخيص للإدارة الآن
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                const btnSend = document.getElementById('btnSendTranscriptPermission');
+                if (btnSend) {
+                    btnSend.addEventListener('click', async () => {
+                        const studentCodeInput = document.getElementById('transcript_student_code');
+                        const birthDateInput = document.getElementById('transcript_birth_date');
+                        const reasonInput = document.getElementById('transcriptReqReason');
+
+                        btnSend.disabled = true;
+                        btnSend.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب للإدارة...';
+
+                        try {
+                            const formData = new FormData();
+                            formData.append('action', 'request_permission');
+                            formData.append('student_code', studentCodeInput ? studentCodeInput.value : '');
+                            formData.append('birth_date', birthDateInput ? birthDateInput.value : '');
+                            formData.append('notes', reasonInput ? reasonInput.value : '');
+
+                            const res = await fetch('backend/transcript_lookup.php', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const result = await res.json();
+
+                            if (result.success || (result.data && result.data.request_status === 'pending')) {
+                                renderTranscript({
+                                    success: false,
+                                    message: result.message,
+                                    data: {
+                                        need_permission: true,
+                                        request_status: 'pending',
+                                        student: result.data ? result.data.student : student
+                                    }
+                                });
+                            } else {
+                                alert(result.message || 'تعذر إرسال الطلب.');
+                                btnSend.disabled = false;
+                                btnSend.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إعادة المحاولة';
+                            }
+                        } catch (e) {
+                            console.error('Request permission error:', e);
+                            alert('تعذر الاتصال بالخادم لإرسال الطلب.');
+                            btnSend.disabled = false;
+                            btnSend.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إعادة المحاولة';
+                        }
+                    });
+                }
+                return;
+            }
+
+            if (reqStatus === 'pending') {
+                transcriptResult.innerHTML = `
+                    <div class="transcript-permission-card" style="padding: 1.8rem; border-radius: 14px; background: #fffdf5; border: 1.5px solid #fde68a; box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.1); text-align: center; animation: fadeIn 0.3s ease;">
+                        <div style="width: 58px; height: 58px; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem;">
+                            <i class="fa-solid fa-clock-rotate-left fa-spin" style="--fa-animation-duration: 4s;"></i>
+                        </div>
+                        <h4 style="color: #92400e; margin-bottom: 0.6rem; font-size: 1.25rem; font-weight: 800;">
+                            ⏳ الطلب قيد المراجعة لدى الإدارة
+                        </h4>
+                        <p style="color: #78350f; font-size: 0.93rem; line-height: 1.65; max-width: 520px; margin: 0 auto 1.2rem;">
+                            تم تسجيل طلب ترخيص سحب النقط للتلميذ(ة) <strong>${escapeHtml(student.full_name || '')}</strong> بنجاح. الطلب معروض حالياً على الإدارة للمصادقة عليه.<br>
+                            بمجرد قبول الطلب، ستتمكن فوراً من عرض بيان النقط وتحميله كملف PDF رسمي.
+                        </p>
+                        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-outline" id="btnRecheckStatus" style="font-size: 0.9rem;">
+                                <i class="fa-solid fa-rotate"></i> تحديث حالة الطلب
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                const btnRecheck = document.getElementById('btnRecheckStatus');
+                if (btnRecheck) {
+                    btnRecheck.addEventListener('click', () => {
+                        if (transcriptForm) {
+                            transcriptForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                        }
+                    });
+                }
+                return;
+            }
+
+            if (reqStatus === 'rejected') {
+                const rejectReason = data.admin_notes || 'يرجى مراجعة إدارة المؤسسة لتسوية الملف.';
+                transcriptResult.innerHTML = `
+                    <div class="transcript-permission-card" style="padding: 1.8rem; border-radius: 14px; background: #fff5f5; border: 1.5px solid #fecaca; box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.1); text-align: center; animation: fadeIn 0.3s ease;">
+                        <div style="width: 58px; height: 58px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem;">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </div>
+                        <h4 style="color: #991b1b; margin-bottom: 0.6rem; font-size: 1.25rem; font-weight: 800;">
+                            ❌ تم رفض طلب سحب النقط من طرف الإدارة
+                        </h4>
+                        <p style="color: #7f1d1d; font-size: 0.93rem; line-height: 1.65; max-width: 520px; margin: 0 auto 1.2rem;">
+                            <strong>توضيح الإدارة:</strong> ${escapeHtml(rejectReason)}
+                        </p>
+                        <button type="button" class="btn btn-primary" id="btnRetryRequest" style="margin: 0 auto;">
+                            <i class="fa-solid fa-paper-plane"></i> تقديم طلب ترخيص جديد
+                        </button>
+                    </div>
+                `;
+
+                const btnRetry = document.getElementById('btnRetryRequest');
+                if (btnRetry) {
+                    btnRetry.addEventListener('click', () => {
+                        renderTranscript({
+                            success: false,
+                            data: {
+                                need_permission: true,
+                                request_status: 'none',
+                                student: student
+                            }
+                        });
+                    });
+                }
+                return;
+            }
+        }
+
+        // Generic error
+        transcriptResult.innerHTML = `
+            <div style="background: #fff5f5; border: 1px solid #fed7d7; padding: 1.2rem; border-radius: 10px; color: #c53030; text-align: center;">
+                <p style="margin: 0; font-weight: 600;"><i class="fa-solid fa-circle-exclamation"></i> ${escapeHtml(payload.message || "تعذر استخراج بيان النقط.")}</p>
+            </div>
+        `;
         return;
     }
 
     const student = payload.data.student || {};
     const grades = payload.data.grades || [];
     const summary = payload.data.summary || {};
+    const permission = payload.data.permission || {};
 
     const rows = grades
         .map(
@@ -406,6 +568,14 @@ function renderTranscript(payload) {
 
     transcriptResult.innerHTML = `
         <div class="print-document print-transcript">
+            <div class="no-print" style="margin-bottom: 1rem; background: #ecfdf5; border: 1.5px solid #6ee7b7; color: #065f46; padding: 0.8rem 1.2rem; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; font-size: 0.88rem;">
+                <span style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-shield-check" style="color: #059669; font-size: 1.1rem;"></i>
+                    ترخيص رسمي معتمد: تم سحب هذا البيان بموافقة رسمية من (${escapeHtml(permission.approved_by || 'إدارة المؤسسة')})
+                </span>
+                ${permission.expires_at ? `<span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">⏳ صالح حتى: ${escapeHtml(permission.expires_at)}</span>` : '<span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">✔️ ترخيص دائم</span>'}
+            </div>
+
             ${renderPrintHeader("بيان النقط السنوي")}
             <div class="result-meta">
                 <span class="chip">الطالب(ة): <strong>${escapeHtml(student.full_name || '')}</strong></span>
@@ -430,15 +600,27 @@ function renderTranscript(payload) {
             </div>
             
             <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th>نقطة المراقبة المستمرة</th>
+                        <th>نقطة الامتحان</th>
+                        <th>المعامل</th>
+                        <th>المعدل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
                 
-                <div class="action-buttons no-print" style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
-                    <button type="button" class="btn btn-outline" id="printTranscriptButton">
-                        <i class="fa-solid fa-print"></i> طباعة البيان
-                    </button>
-                    <button type="button" class="btn btn-primary" id="downloadTranscriptPDF">
-                        <i class="fa-solid fa-file-pdf"></i> تحميل PDF
-                    </button>
-                </div>
+            <div class="action-buttons no-print" style="display: flex; gap: 10px; margin-top: 15px; justify-content: center;">
+                <button type="button" class="btn btn-outline" id="printTranscriptButton">
+                    <i class="fa-solid fa-print"></i> طباعة البيان
+                </button>
+                <button type="button" class="btn btn-primary" id="downloadTranscriptPDF">
+                    <i class="fa-solid fa-file-pdf"></i> تحميل PDF
+                </button>
             </div>
 
             ${(payload.data && Array.isArray(payload.data.notifications) && payload.data.notifications.length > 0) ? `
